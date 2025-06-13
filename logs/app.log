@@ -4969,3 +4969,46 @@ org.hibernate.PropertyValueException: not-null property references a null or tra
 2025-06-13T16:16:52.022+07:00  INFO 15888 --- [websistem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-06-13T16:16:52.023+07:00  INFO 15888 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-06-13T16:16:52.026+07:00  INFO 15888 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-06-13T16:16:59.570+07:00  INFO 8572 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : Starting WebsistemApplication using Java 18.0.2.1 with PID 8572 (D:\RIDHO\Springboot project\websistem\target\classes started by LRPC-00009 in D:\RIDHO\Springboot project\websistem)
+2025-06-13T16:16:59.572+07:00  INFO 8572 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-06-13T16:16:59.601+07:00  INFO 8572 --- [websistem] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-06-13T16:16:59.601+07:00  INFO 8572 --- [websistem] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-06-13T16:17:00.060+07:00  INFO 8572 --- [websistem] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-13T16:17:00.106+07:00  INFO 8572 --- [websistem] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 40 ms. Found 3 JPA repository interfaces.
+2025-06-13T16:17:00.494+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-06-13T16:17:00.503+07:00  INFO 8572 --- [websistem] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-13T16:17:00.504+07:00  INFO 8572 --- [websistem] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-13T16:17:00.544+07:00  INFO 8572 --- [websistem] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-13T16:17:00.545+07:00  INFO 8572 --- [websistem] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 943 ms
+2025-06-13T16:17:00.669+07:00  INFO 8572 --- [websistem] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-13T16:17:00.705+07:00  INFO 8572 --- [websistem] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-13T16:17:00.737+07:00  INFO 8572 --- [websistem] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-13T16:17:00.924+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-13T16:17:00.945+07:00  INFO 8572 --- [websistem] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-13T16:17:01.215+07:00  INFO 8572 --- [websistem] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@80d289e
+2025-06-13T16:17:01.217+07:00  INFO 8572 --- [websistem] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-13T16:17:01.268+07:00  INFO 8572 --- [websistem] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-13T16:17:01.847+07:00  INFO 8572 --- [websistem] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-13T16:17:01.899+07:00  INFO 8572 --- [websistem] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-13T16:17:02.064+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-13T16:17:02.560+07:00  WARN 8572 --- [websistem] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-13T16:17:02.577+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-06-13T16:17:02.782+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-06-13T16:17:02.805+07:00  INFO 8572 --- [websistem] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-06-13T16:17:02.812+07:00  INFO 8572 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : Started WebsistemApplication in 3.549 seconds (process running for 3.893)
+2025-06-13T16:17:03.005+07:00  INFO 8572 --- [websistem] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-13T16:17:03.005+07:00  INFO 8572 --- [websistem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-06-13T16:17:03.006+07:00  INFO 8572 --- [websistem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-06-13T16:17:03.059+07:00  WARN 8572 --- [websistem] [http-nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-06-13T16:36:17.514+07:00  INFO 8572 --- [websistem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-13T16:36:17.693+07:00  INFO 8572 --- [websistem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-13T16:36:17.695+07:00  INFO 8572 --- [websistem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-13T16:36:17.698+07:00  INFO 8572 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-13T16:36:17.700+07:00  INFO 8572 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
