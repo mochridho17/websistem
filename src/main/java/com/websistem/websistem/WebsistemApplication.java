@@ -1,0 +1,12 @@
+// filepath: d:\RIDHO\Springboot project\websistem\src\main\java\com\websistem\websistem\WebsistemApplication.java
+package com.websistem.websistem;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class WebsistemApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WebsistemApplication.class, args);
+    }
+}

@@ -1,0 +1,53 @@
+html, body {
+    height: 100%;
+}
+body {
+    min-height: 100vh;
+    height: 100%;
+}
+.sidebar {
+    min-height: auto;
+    background: #222222; /* hitam abu-abu */
+    width: 220px;
+}
+.sidebar .nav-link {
+    color: #fff;
+}
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    background: #444444; /* abu-abu gelap untuk hover */
+    color: #fff;
+}
+main {
+    min-height: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.profile-label {
+    color: #fff;
+    /* font-weight: bold; */
+    letter-spacing: 1px;
+}
+.navbar {
+    background: #222222 !important;
+    border-bottom: 2px solid #444444; /* garis bawah navbar */
+}
+
+.sidebar {
+    min-height: auto;
+    background: #222222;
+    width: 220px;
+    border-right: 2px solid #444444; /* garis kanan sidebar */
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: #fff !important;
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link:hover,
+.navbar .dropdown-menu .dropdown-item:hover {
+    background: #444444 !important; /* abu-abu gelap untuk hover */
+    color: #fff !important;
+}
