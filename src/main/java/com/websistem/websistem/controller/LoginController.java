@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -14,13 +16,20 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
-    public String showLoginForm(HttpSession session) {
-        if (session.getAttribute("user") != null) {
-            return "redirect:/home";
-        }
-        return "index";
+   @GetMapping("/")
+public String showLoginForm(HttpSession session, Model model, HttpServletRequest request) {
+    if (session.getAttribute("user") != null) {
+        return "redirect:/home";
     }
+    String ip = request.getRemoteAddr();
+    model.addAttribute("ip", ip);
+    return "index";
+}
+
+@GetMapping("/login")
+public String redirectLoginToIndex() {
+    return "redirect:/";
+}
 
     @PostMapping("/login")
     public String login(@RequestParam String username,

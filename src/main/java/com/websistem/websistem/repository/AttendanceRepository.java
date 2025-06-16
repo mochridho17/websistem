@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
+    long countByFactory(String factory);
     @Query("SELECT a FROM Attendance a " +
    "WHERE a.tanggal >= :startDate AND a.tanggal <= :endDate " +
    "AND (:factory IS NULL OR a.factory = :factory) " +

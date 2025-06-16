@@ -4,118 +4,124 @@
     <meta charset="UTF-8">
     <title th:text="${factory} + ' - ' + ${username} + ' ' + ${ip}">Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="home">Web - FV</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-    <li class="nav-item">
-        <a class="nav-link">
-            <span th:text="${factory} + ' - ' + ${username}" class="profile-label">Profile</span>
+    <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">
+            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
         </a>
-    </li>
-    <!-- Language Dropdown -->
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span th:text="#{language}">Language</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-            <li>
-                <a class="dropdown-item" th:href="@{?lang=id}">Indonesia</a>
-            </li>
-            <li>
-                <a class="dropdown-item" th:href="@{?lang=en}">English</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link profile-label" href="/logout">Logout</a>
-    </li>
-</ul>
-            </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <span th:text="${factory} + ' - ' + ${username}" class="profile-label"></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="showLangAlert(event)">
+                        <i class="bi bi-translate"></i> <span th:text="#{language}">Language</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        <i class="bi bi-door-closed-fill"></i> Logout
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block sidebar py-4">
-                <div class="position-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item mb-2">
-                           <a class="nav-link" href="/home">
-                                <span class="me-2">&#8962;</span> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2" th:if="${role == 'ADMIN'}">
-                            <a class="nav-link" href="/dataUsers">
-                                <span class="me-2">&#128100;</span> Data Users
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="/dataEmployee">
-                                <span class="me-2">&#128100;</span> Data Karyawan
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="/dataAttendance">
-                                <span class="me-2">&#128736;</span> Data Kehadiran
-                            </a>
-                        </li>
-                        <!-- <li class="nav-item mb-2">
-                            <a class="nav-link" href="#">
-                                <span class="me-2">&#128202;</span> <span th:text="#{menu.report}">Laporan</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="#">
-                                <span class="me-2">&#9881;</span> <span th:text="#{menu.settings}">Pengaturan</span>
-                            </a>
-                        </li> -->
-                        <li class="nav-item mt-4">
-                            <a class="nav-link" href="/logout">
-                                <span class="me-2">&#128682;</span> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+<nav class="col-md-2 d-none d-md-block sidebar">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/home">
+                    <i class="bi bi-house-door-fill"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item " th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/dataUsers">
+                    <i class="bi bi-person-add"></i> Data Users
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/dataEmployee">
+                    <i class="bi bi-person-lines-fill"></i> Data Karyawan
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/dataAttendance">
+                    <i class="bi bi-list"></i> Data Kehadiran
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
             <!-- Main Content -->
             <main class="col-md-10 ms-sm-auto px-4">
+                <!-- <div class="alert alert-success text-center mt-4">
+                    <h2>Selamat Datang di Dashboard!</h2>
+                    <p>Login berhasil.</p>
+                </div> -->
                 <div class="row mt-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card text-white bg-success">
-                            <div class="card-body">
-                                <h5 class="card-title">Data User</h5>
-                                <p class="card-text">Lihat dan kelola data Employee.</p>
-                                <a href="dataEmployee.html" class="btn btn-light btn-sm">Lihat</a>
+                    <div class="col-md-3 mb-3" th:if="${role == 'ADMIN'}">
+                       <div class="card text-white colorbg shadow-sm border-0">
+                            <div class="card-body d-flex flex-column align-items-start">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2" style="font-size:2rem;">&#128100;</span>
+                                    <h5 class="card-title mb-0">Data Users</h5>
+                                </div>
+                                <p class="card-text mb-2">
+                                    <span class="badge bg-light text-dark fs-6">Total: <span th:text="${totalUser}">0</span></span>
+                                </p>
+                                <a href="/dataUsers" class="btn btn-outline-light btn-sm mt-auto">
+                                    <span class="me-1">&#128065;</span> Lihat
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card text-white bg-info">
-                            <div class="card-body">
-                                <h5 class="card-title">Data Attendance</h5>
-                                <p class="card-text">Lihat data factory.</p>
-                                <a href="dataAttendance.html" class="btn btn-light btn-sm">Lihat</a>
+                        <div class="card text-white colorbg shadow-sm border-0">
+                            <div class="card-body d-flex flex-column align-items-start">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2" style="font-size:2rem;">&#128100;</span>
+                                    <h5 class="card-title mb-0">Data Karyawan</h5>
+                                </div>
+                                <p class="card-text mb-2">
+                                    <span class="badge bg-light text-dark fs-6">Total: <span th:text="${totalEmployee}">0</span></span>
+                                </p>
+                                <a href="/dataEmployee" class="btn btn-outline-light btn-sm mt-auto">
+                                    <span class="me-1">&#128065;</span> Lihat
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card text-white bg-warning">
-                            <div class="card-body">
-                                <h5 class="card-title">Laporan</h5>
-                                <p class="card-text">Lihat laporan sistem.</p>
-                                <a href="#" class="btn btn-light btn-sm">Lihat</a>
+                        <div class="card text-white colorbg shadow-sm border-0">
+                            <div class="card-body d-flex flex-column align-items-start">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2" style="font-size:2rem;"><i class="bi bi-list"></i></span>
+                                    <h5 class="card-title mb-0">Data Kehadiran</h5>
+                                </div>
+                                <p class="card-text mb-2">
+                                    <span class="badge bg-light text-dark fs-6">Total: <span th:text="${totalAttendance}">0</span></span>
+                                </p>
+                                <a href="/dataAttendance" class="btn btn-outline-light btn-sm mt-auto">
+                                    <span class="me-1">&#128065;</span> Lihat
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <!-- <div class="col-md-3 mb-3">
                         <div class="card text-white bg-danger">
                             <div class="card-body">
                                 <h5 class="card-title">Pengaturan</h5>
@@ -123,15 +129,18 @@
                                 <a href="#" class="btn btn-light btn-sm">Lihat</a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-                <div class="alert alert-success text-center mt-4">
-                    <h2>Selamat Datang di Dashboard!</h2>
-                    <p>Login berhasil.</p>
-                </div>
+                
             </main>
         </div>
     </div>
+    <script>
+        function showLangAlert(event) {
+            event.preventDefault();
+            alert('Sedang dalam pengembangan.');
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

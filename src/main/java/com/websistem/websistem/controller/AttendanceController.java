@@ -34,7 +34,7 @@ public String dataAttendance(
 ) {
     User user = (User) session.getAttribute("user");
     if (user == null) {
-        return "redirect:/login";
+        return "redirect:/";
     }
     String factory = user.getFactory();
 

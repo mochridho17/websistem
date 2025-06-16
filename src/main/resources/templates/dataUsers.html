@@ -11,72 +11,68 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/home">Web - FV</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" >
-                            <span th:text="${factory} + ' - ' + ${username}" class="profile-label">Profile</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link profile-label" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
+    <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">
+            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <span th:text="${factory} + ' - ' + ${username}" class="profile-label"></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="showLangAlert(event)">
+                        <i class="bi bi-translate"></i> <span th:text="#{language}">Language</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        <i class="bi bi-door-closed-fill"></i> Logout
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block sidebar py-4">
-                <div class="position-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item mb-2">
-                           <a class="nav-link" href="/home">
-                                <span class="me-2" >&#8962;</span> Dashboard
-                            </a>
-                        </li>
-                       <li class="nav-item mb-2" th:if="${role == 'ADMIN'}">
-                            <a class="nav-link" href="/dataUsers">
-                                <span class="me-2">&#128100;</span> Data Users
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="/dataEmployee">
-                                <span class="me-2">&#128100;</span> Data Karyawan
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="/dataAttendance">
-                                <span class="me-2">&#128736;</span> Data Kehadiran
-                            </a>
-                        </li>
-                        <!-- <li class="nav-item mb-2">
-                            <a class="nav-link" href="#">
-                                <span class="me-2">&#128202;</span> <span th:text="#{menu.report}">Laporan</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="#">
-                                <span class="me-2">&#9881;</span> <span th:text="#{menu.settings}">Pengaturan</span>
-                            </a>
-                        </li> -->
-                        <li class="nav-item mt-4">
-                            <a class="nav-link" href="/logout">
-                                <span class="me-2">&#128682;</span> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+<nav class="col-md-2 d-none d-md-block sidebar">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/home">
+                    <i class="bi bi-house-door-fill"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item" th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/dataUsers">
+                    <i class="bi bi-person-add"></i> Data Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dataEmployee">
+                    <i class="bi bi-person-lines-fill"></i> Data Karyawan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dataAttendance">
+                    <i class="bi bi-list"></i> Data Kehadiran
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
             <!-- Main Content -->
             <!-- ...existing code... -->
 <main class="col-md-10 ms-sm-auto px-4">
@@ -126,13 +122,13 @@
                             <td th:text="${user.role}"></td>
                             <td>
                                <button type="button" class="btn btn-warning btn-sm btn-edit"
-                                    th:data-id="${user.id}"
-                                    th:data-username="${user.username}"
-                                    th:data-password="${user.password}"
-                                    th:data-factory="${user.factory}"
-                                    th:data-createdperson="${user.createdPerson}">
-                                Edit
-                              </button>
+                                        th:data-id="${user.id}"
+                                        th:data-username="${user.username}"
+                                        th:data-password="${user.password}"
+                                        th:data-factory="${user.factory}"
+                                        th:data-createdperson="${user.createdPerson}">
+                                    Edit
+                                </button>
                                 <!-- Tombol Hapus -->
                                <form th:action="@{/delete-user/{id}(id=${user.id})}" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
@@ -142,6 +138,42 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="editUserForm" method="post" th:action="@{/edit-user}">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" name="id"/>
+        <div class="mb-3">
+          <label class="form-label">Username:</label>
+          <input type="text" id="editUsername" name="username" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password:</label>
+          <input type="password" id="editPassword" name="password" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Factory:</label>
+          <select id="editFactory" name="factory" class="form-select" required>
+            <option value="FIU">FIU</option>
+            <option value="FIWA">FIWA</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Created Person:</label>
+          <input type="text" id="editCreatedPerson" name="createdPerson" class="form-control" readonly />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
     <!-- Modal Tambah User -->
                 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -182,44 +214,6 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- Modal Edit User (hanya satu, di luar loop) -->
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="modal-content" id="editUserForm" method="post" th:action="@{/edit-user}">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="editId" name="id"/>
-        <div class="mb-3">
-          <label class="form-label">Username:</label>
-          <input type="text" id="editUsername" name="username" class="form-control" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Password:</label>
-          <input type="password" id="editPassword" name="password" class="form-control" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Factory:</label>
-          <select id="editFactory" name="factory" class="form-select" required>
-            <option value="FIU">FIU</option>
-            <option value="FIWA">FIWA</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Created Person:</label>
-          <input type="text" id="editCreatedPerson" name="createdPerson" class="form-control" readonly />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-      </div>
-    </form>
-  </div>
-</div>
 </main>
 
 <!-- ...existing code... -->
@@ -258,6 +252,11 @@ $(document).ready(function () {
 });
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+        function showLangAlert(event) {
+            event.preventDefault();
+            alert('Sedang dalam pengembangan.');
+        }
+    </script>
 </body>
 </html>

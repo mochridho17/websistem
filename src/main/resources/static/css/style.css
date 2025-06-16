@@ -51,3 +51,129 @@ main {
     background: #444444 !important; /* abu-abu gelap untuk hover */
     color: #fff !important;
 }
+
+
+.colorbg {
+    background: #222222 !important;
+}
+.colorbg:hover {
+    box-shadow: 0 4px 24px rgba(34,34,34,0.3);
+    transform: translateY(-2px) scale(1.02);
+    transition: all 0.2s;
+    /* background: #222222 !important;  // Tidak perlu, sudah di atas */
+}
+
+
+
+/* Navbar */
+.navbar {
+    background: #181818 !important;
+    border-bottom: 2px solid #444444;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.navbar .navbar-brand {
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #fff !important;
+}
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: #bbb !important;
+    transition: color 0.2s;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: #fff !important;
+    background: #222 !important;
+    border-radius: 0.5rem;
+}
+.navbar .dropdown-menu {
+    background: #222;
+    border: none;
+}
+.navbar .dropdown-item {
+    color: #fff;
+}
+.navbar .dropdown-item:hover {
+    background: #444;
+    color: #fff;
+}
+
+/* Sidebar */
+.sidebar {
+    background: #222222;
+    border-right: 2px solid #444444;
+    min-height: 92vh;
+    padding-top: 2rem;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+}
+.sidebar .nav-link {
+    color: #bbb;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s, color 0.2s;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+    background: #444444;
+    color: #fff;
+}
+.sidebar .nav-link i {
+    font-size: 1.3rem;
+    margin-right: 0.7rem;
+    color: #fff;
+}
+.sidebar .nav-link.active i,
+.sidebar .nav-link:hover i {
+    color: #fff;
+}
+
+body {
+    background: #4e4e4e !important;
+}
+
+
+.login-card {
+    background: #222222;
+    color: #fff;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(34,34,34,0.5);
+}
+.login-card .form-control, .login-card .form-select {
+    background: #181818;
+    color: #fff;
+    border: 1px solid #444;
+}
+.login-card .form-control:focus, .login-card .form-select:focus {
+    background: #222;
+    color: #fff;
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+.login-card .btn-primary {
+    background: #4e4e4e;
+    border: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.login-card .btn-primary:hover {
+    background: #0056b3;
+}
+.login-card .card-title {
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+.login-card .alert {
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+}
+.login-card label {
+    color: #bbb;
+}
