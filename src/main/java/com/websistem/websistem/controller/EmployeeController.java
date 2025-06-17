@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public String dataEmployee(Model model, HttpSession session, HttpServletRequest 
         model.addAttribute("factory", loginUser.getFactory());
         model.addAttribute("role", loginUser.getRole());
     }
+    model.addAttribute("employeeFiwa", new EmployeeFiwa());
     model.addAttribute("ip", request.getRemoteAddr());
 
     System.out.println("Jumlah data employee: " + employeeList.size()); // Debug
@@ -137,5 +141,26 @@ public String uploadEmployee(MultipartFile file, Model model, HttpSession sessio
             return String.valueOf((long) cell.getNumericCellValue());
         }
         return cell.toString().trim();
+    }
+
+    @PostMapping("/add-employee")
+    public String addEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, RedirectAttributes redirectAttributes) {
+        employeeFiwaRepository.save(employeeFiwa);
+        redirectAttributes.addFlashAttribute("success", "Karyawan berhasil ditambah!");
+        return "redirect:/dataEmployee";
+    }
+
+    @PostMapping("/edit-employee")
+    public String editEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, RedirectAttributes redirectAttributes) {
+        employeeFiwaRepository.save(employeeFiwa);
+        redirectAttributes.addFlashAttribute("success", "Karyawan berhasil diupdate!");
+        return "redirect:/dataEmployee";
+    }
+
+    @PostMapping("/delete-employee/{id}")
+    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        employeeFiwaRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("success", "Karyawan berhasil dihapus!");
+        return "redirect:/dataEmployee";
     }
 }

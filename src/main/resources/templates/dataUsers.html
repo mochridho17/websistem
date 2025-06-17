@@ -60,6 +60,11 @@
                     <i class="bi bi-person-add"></i> Data Users
                 </a>
             </li>
+            <li class="nav-item " th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/audit-log">
+                    <i class="bi bi-person-add"></i> Audit Logs
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="/dataEmployee">
                     <i class="bi bi-person-lines-fill"></i> Data Karyawan
@@ -130,7 +135,7 @@
                                     Edit
                                 </button>
                                 <!-- Tombol Hapus -->
-                               <form th:action="@{/delete-user/{id}(id=${user.id})}" method="post" style="display:inline;">
+                               <form th:action="@{'/delete-user/' + ${user.id}}" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
                                </form>
                             </td>
@@ -206,6 +211,10 @@
                                     <option value="USER">USER</option>
                                 </select>
                              </div>
+                             <div class="mb-3">
+                                <label class="form-label">Created Person:</label>
+                                <input type="text" class="form-control" th:value="${username}" readonly />
+                            </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

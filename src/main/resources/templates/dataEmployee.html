@@ -59,6 +59,11 @@
                     <i class="bi bi-person-add"></i> Data Users
                 </a>
             </li>
+            <li class="nav-item " th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/audit-log">
+                    <i class="bi bi-person-add"></i> Audit Logs
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="/dataEmployee">
                     <i class="bi bi-person-lines-fill"></i> Data Karyawan
@@ -78,12 +83,16 @@
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h2>Data Karyawan</h2>
-        <!-- Tombol Upload yang memunculkan modal -->
+    <h2>Data Karyawan</h2>
+    <div>
+        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+            <i class="bi bi-plus-circle"></i> Tambah Karyawan
+        </button>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
             Upload
         </button>
     </div>
+</div>
     <div class="table-responsive">
     <table id="employeeTable" class="table table-bordered table-striped">
       <thead>
@@ -95,6 +104,7 @@
           <th>Dept Code</th>
           <th>Group Name</th>
           <th>Start Date</th>
+          <th>Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -106,9 +116,120 @@
           <td th:text="${employee_fiwa.deptCode}"></td>
           <td th:text="${employee_fiwa.groupName}"></td>
           <td th:text="${employee_fiwa.startDate}"></td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm btn-edit"
+                th:data-id="${employee_fiwa.id}"
+                th:data-employee-no="${employee_fiwa.employeeNo}"
+                th:data-name="${employee_fiwa.name}"
+                th:data-gender="${employee_fiwa.gender}"
+                th:data-dept-code="${employee_fiwa.deptCode}"
+                th:data-group-name="${employee_fiwa.groupName}"
+                th:data-start-date="${employee_fiwa.startDate}">
+                Edit
+            </button>
+            <form th:action="@{'/delete-employee/' + ${employee_fiwa.id}}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus karyawan ini?')">Hapus</button>
+            </form>
+          </td>
         </tr>
       </tbody>
     </table>
+</div>
+ 
+<!-- Modal Tambah Karyawan -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" th:action="@{/add-employee}" th:object="${employeeFiwa}" method="post">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addEmployeeModalLabel">Tambah Karyawan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Employee No</label>
+          <input type="text" th:field="*{employeeNo}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nama</label>
+          <input type="text" th:field="*{name}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Gender</label>
+          <select th:field="*{gender}" class="form-select" required>
+            <option value="L">Female</option>
+            <option value="P">Male</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Dept Code</label>
+          <input type="text" th:field="*{deptCode}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Group Name</label>
+          <input type="text" th:field="*{groupName}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Start Date</label>
+          <input type="text" th:field="*{startDate}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Factory</label>
+          <select th:field="*{factory}" class="form-select" required>
+            <option value="" disabled selected>Pilih Factory</option>
+            <option value="FIU">FIU</option>
+            <option value="FIWA">FIWA</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Edit Karyawan (gunakan JS untuk isi data) -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" th:action="@{/edit-employee}" method="post">
+      <input type="hidden" id="editId" name="id">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editEmployeeModalLabel">Edit Karyawan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Employee No</label>
+          <input type="text" id="editEmployeeNo" name="employeeNo" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nama</label>
+          <input type="text" id="editName" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Gender</label>
+          <input type="text" id="editGender" name="gender" class="form-control" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Dept Code</label>
+          <input type="text" id="editDeptCode" name="deptCode" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Group Name</label>
+          <input type="text" id="editGroupName" name="groupName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Start Date</label>
+          <input type="text" id="editStartDate" name="startDate" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
 </div>
     <!-- Modal Upload Excel -->
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -131,25 +252,34 @@
             </form>
         </div>
     </div>
+    
 </main>
 
-<!-- ...existing code... -->
         </div>
     </div>
-    <script>
-    $(document).ready(function () {
-        $('#employeeTable').DataTable({
-            "pageLength": 10,
-            "lengthMenu": [5, 10, 25, 50, 100]
-        });
-    });
-</script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-        function showLangAlert(event) {
-            event.preventDefault();
-            alert('Sedang dalam pengembangan.');
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+$(document).ready(function () {
+    // Inisialisasi DataTables
+    $('#employeeTable').DataTable({
+        "pageLength": 10,
+        "lengthMenu": [5, 10, 25, 50, 100]
+    });
+
+    // Gunakan event delegation agar tombol edit tetap bisa diklik setelah pagination/sorting
+    $('#employeeTable').on('click', '.btn-edit', function () {
+        $('#editId').val($(this).data('id'));
+        $('#editEmployeeNo').val($(this).data('employee-no'));
+        $('#editName').val($(this).data('name'));
+        $('#editGender').val($(this).data('gender'));
+        $('#editDeptCode').val($(this).data('dept-code'));
+        $('#editGroupName').val($(this).data('group-name'));
+        $('#editStartDate').val($(this).data('start-date'));
+        var modal = new bootstrap.Modal(document.getElementById('editEmployeeModal'));
+        modal.show();
+    });
+});
+</script>
+   
 </body>
 </html>

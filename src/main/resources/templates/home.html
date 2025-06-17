@@ -53,6 +53,11 @@
                     <i class="bi bi-person-add"></i> Data Users
                 </a>
             </li>
+            <li class="nav-item " th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/audit-log">
+                    <i class="bi bi-person-add"></i> Audit Logs
+                </a>
+            </li>
             <li class="nav-item ">
                 <a class="nav-link" href="/dataEmployee">
                     <i class="bi bi-person-lines-fill"></i> Data Karyawan
