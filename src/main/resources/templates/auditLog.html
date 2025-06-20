@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="/home">
-            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
+            <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -82,8 +82,8 @@
 <main class="col-md-10 ms-sm-auto px-4">
 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h2>Data Logs</h2>
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- <h2>Data Logs</h2> -->
         <!-- Tombol Download yang memunculkan modal -->
     </div>
     <div class="table-responsive">
@@ -146,8 +146,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Download</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-dark">Download</button>
             </div>
         </form>
     </div>

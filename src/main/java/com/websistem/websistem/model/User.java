@@ -30,10 +30,9 @@ public class User {
     @Column(nullable = false)
     private String role; // contoh: "ADMIN" atau "USER"
 
+    private String authority;
 
 
-
-    
 
     // --- Constructor ---
     public User() {
@@ -95,5 +94,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 }

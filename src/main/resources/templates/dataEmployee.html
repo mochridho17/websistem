@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="/home">
-            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
+            <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -82,20 +82,37 @@
 <main class="col-md-10 ms-sm-auto px-4">
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-    <h2>Data Karyawan</h2>
-    <div>
-        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-            <i class="bi bi-plus-circle"></i> Tambah Karyawan
-        </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-            Upload
-        </button>
-    </div>
+    <div class="d-flex justify-content-between align-items-center">
+    <!-- <h2>Data Karyawan</h2> -->
+</div>
+      <div class="d-flex align-items-end flex-wrap gap-2 mb-3">
+    <button type="button" class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#addEmployeeModal"
+        th:attr="disabled=${!canCrudEmployee}">
+        <i class="bi bi-person-fill-add"></i>
+    </button>
+    <button type="button" class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#uploadActiveModal">
+        <i class="bi bi-upload"></i>
+    </button>
+    <button type="button" class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#uploadResignModal">
+        <i class="bi-person-dash-fill"></i>
+    </button>
+    <button type="button" id="exportExcelBtn" class="btn btn-dark">
+        <i class="bi bi-file-earmark-excel"></i> Export
+    </button>
+    <form method="post" action="/queryEmployee" class="d-flex align-items-end gap-2 mb-0">
+        <input type="text" name="employeeNo" placeholder="Employee No" class="form-control" style="width: 150px;">
+        <button type="submit" class="btn btn-dark">Query</button>
+    </form>
 </div>
     <div class="table-responsive">
     <table id="employeeTable" class="table table-bordered table-striped">
-      <thead>
+      <thead class="table-dark">
         <tr>
           <th>No</th>
           <th>Employee No</th>
@@ -104,7 +121,7 @@
           <th>Dept Code</th>
           <th>Group Name</th>
           <th>Start Date</th>
-          <th>Aksi</th>
+          <th style="width: 120px;">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -117,18 +134,20 @@
           <td th:text="${employee_fiwa.groupName}"></td>
           <td th:text="${employee_fiwa.startDate}"></td>
           <td>
-            <button type="button" class="btn btn-warning btn-sm btn-edit"
+            <button type="button" class="btn btn-dark btn-sm btn-edit"
                 th:data-id="${employee_fiwa.id}"
                 th:data-employee-no="${employee_fiwa.employeeNo}"
                 th:data-name="${employee_fiwa.name}"
                 th:data-gender="${employee_fiwa.gender}"
                 th:data-dept-code="${employee_fiwa.deptCode}"
                 th:data-group-name="${employee_fiwa.groupName}"
-                th:data-start-date="${employee_fiwa.startDate}">
+                th:data-start-date="${employee_fiwa.startDate}"
+                th:attr="disabled=${!canCrudEmployee}"
+                onclick="return showCrudAlertIfDisabled(this)">
                 Edit
             </button>
-            <form th:action="@{'/delete-employee/' + ${employee_fiwa.id}}" method="post" style="display:inline;">
-              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus karyawan ini?')">Hapus</button>
+            <form th:action="@{'/delete-employee/' + ${employee_fiwa.id}}" method="post" class="d-inline-block">
+              <button th:attr="disabled=${!canCrudEmployee}" type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus karyawan ini?')">Hapus</button>
             </form>
           </td>
         </tr>
@@ -156,8 +175,8 @@
         <div class="mb-3">
           <label class="form-label">Gender</label>
           <select th:field="*{gender}" class="form-select" required>
-            <option value="L">Female</option>
-            <option value="P">Male</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
           </select>
         </div>
         <div class="mb-3">
@@ -172,18 +191,18 @@
           <label class="form-label">Start Date</label>
           <input type="text" th:field="*{startDate}" class="form-control" required>
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label class="form-label">Factory</label>
           <select th:field="*{factory}" class="form-select" required>
             <option value="" disabled selected>Pilih Factory</option>
             <option value="FIU">FIU</option>
             <option value="FIWA">FIWA</option>
           </select>
-        </div>
+        </div> -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-dark">Simpan</button>
       </div>
     </form>
   </div>
@@ -225,48 +244,107 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-dark">Simpan Perubahan</button>
       </div>
     </form>
   </div>
 </div>
-    <!-- Modal Upload Excel -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content" method="post" enctype="multipart/form-data" action="/upload-employee">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Upload File Excel Karyawan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal Upload Karyawan Aktif -->
+<div class="modal fade" id="uploadActiveModal" tabindex="-1" aria-labelledby="uploadActiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" enctype="multipart/form-data" action="/upload-employee">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadActiveModalLabel">Upload File Excel Karyawan Aktif</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="fileExcelActive" class="form-label">Pilih File Excel (.xlsx, .xls)</label>
+                    <input class="form-control" type="file" id="fileExcelActive" name="file" accept=".xlsx,.xls" required>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="fileExcel" class="form-label">Pilih File Excel (.xlsx, .xls)</label>
-                        <input class="form-control" type="file" id="fileExcel" name="file" accept=".xlsx,.xls" required>
-                    </div>
+                <div class="mb-3">
+                    <small class="text-danger fw-bold">
+                        * File Excel yang diupload harus hasil download dari ERP!
+                    </small>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Upload</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-dark">Upload</button>
+            </div>
+        </form>
     </div>
-    
+</div>
+
+ <!-- Modal Upload Karyawan Resign -->
+<div class="modal fade" id="uploadResignModal" tabindex="-1" aria-labelledby="uploadResignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" enctype="multipart/form-data" action="/upload-employee-resign">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadResignModalLabel">Upload File Excel Karyawan Resign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="fileExcelResign" class="form-label">Pilih File Excel (.xlsx, .xls)</label>
+                    <input class="form-control" type="file" id="fileExcelResign" name="file" accept=".xlsx,.xls" required>
+                </div>
+                <div class="mb-3">
+                    <small class="text-danger fw-bold">
+                        * File Excel yang diupload harus hasil download dari ERP!
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-dark">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>   
 </main>
 
         </div>
     </div>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 $(document).ready(function () {
-    // Inisialisasi DataTables
-    $('#employeeTable').DataTable({
-        "pageLength": 10,
-        "lengthMenu": [5, 10, 25, 50, 100]
+    var today = new Date();
+    var tanggal = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    var fileName = 'DataKaryawan_' + tanggal;
+
+    var table = $('#employeeTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        dom: 'Blfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="bi bi-file-earmark-excel"></i> Export Excel',
+                title: 'Data Karyawan ',
+                filename: fileName,
+                exportOptions: {
+                    columns: ':not(:last-child)', // Semua kolom kecuali kolom Action
+                    modifier: { page: 'all' }
+                },
+                className: 'd-none'
+            }
+        ],
+        language: {
+            emptyTable: "Tidak ada data karyawan"
+        }
     });
 
-    // Gunakan event delegation agar tombol edit tetap bisa diklik setelah pagination/sorting
+    $('#exportExcelBtn').on('click', function() {
+        table.button('.buttons-excel').trigger();
+    });
+
+    // Event delegation untuk tombol edit
     $('#employeeTable').on('click', '.btn-edit', function () {
         $('#editId').val($(this).data('id'));
         $('#editEmployeeNo').val($(this).data('employee-no'));
@@ -280,6 +358,11 @@ $(document).ready(function () {
     });
 });
 </script>
-   
+<script>
+        function showLangAlert(event) {
+            event.preventDefault();
+            alert('Sedang dalam pengembangan.');
+        }
+    </script>
 </body>
 </html>

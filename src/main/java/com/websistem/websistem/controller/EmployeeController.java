@@ -1,7 +1,9 @@
 package com.websistem.websistem.controller;
 
+import com.websistem.websistem.model.AuditLog;
 import com.websistem.websistem.model.EmployeeFiwa;
 import com.websistem.websistem.model.User;
+import com.websistem.websistem.repository.AuditLogRepository;
 import com.websistem.websistem.repository.EmployeeFiwaRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,17 +35,25 @@ public class EmployeeController {
     @Autowired
     private EmployeeFiwaRepository employeeFiwaRepository;
 
+    @Autowired
+    private AuditLogRepository auditLogRepository;
+
     @GetMapping("/dataEmployee")
 public String dataEmployee(Model model, HttpSession session, HttpServletRequest request) {
     User loginUser = (User) session.getAttribute("user");
     String factory = loginUser != null ? loginUser.getFactory() : null;
-    List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactory(factory);
-    model.addAttribute("employeeList", employeeList);
+    List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
+    model.addAttribute("employeeList", new ArrayList<>()); // kosong saat awal
+    
 
     if (loginUser != null) {
         model.addAttribute("username", loginUser.getUsername());
         model.addAttribute("factory", loginUser.getFactory());
         model.addAttribute("role", loginUser.getRole());
+
+        // Enable CRUD jika authority TIDAK null dan TIDAK kosong
+        boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
+        model.addAttribute("canCrudEmployee", canCrudEmployee);
     }
     model.addAttribute("employeeFiwa", new EmployeeFiwa());
     model.addAttribute("ip", request.getRemoteAddr());
@@ -52,84 +63,102 @@ public String dataEmployee(Model model, HttpSession session, HttpServletRequest 
 }
 
     @PostMapping("/upload-employee")
-@Transactional
-public String uploadEmployee(MultipartFile file, Model model, HttpSession session, HttpServletRequest request) {
-    List<EmployeeFiwa> employeesList = new ArrayList<>();
-    List<String> duplikatList = new ArrayList<>();
-    User user = (User) session.getAttribute("user");
-    String factory = user != null ? user.getFactory() : null;
-    // Tambahkan set untuk deteksi duplikat di file
-    Set<String> uniqueKeySet = new HashSet<>();
-    try (InputStream is = file.getInputStream();
-         Workbook workbook = WorkbookFactory.create(is)) {
-        Sheet sheet = workbook.getSheetAt(0);
-        Iterator<Row> rows = sheet.iterator();
-        boolean header = true;
-       while (rows.hasNext()) {
-    Row row = rows.next();
-    if (header) {
-        header = false;
-        continue;
-    }
-    if (row == null || row.getCell(0) == null || row.getCell(0).toString().trim().isEmpty()) {
-        continue;
-    }
-    // Tambahan: skip baris jika kolom pertama adalah "Employee No."
-    if ("Employee No.".equalsIgnoreCase(getCellValue(row, 0))) {
-        continue;
-    }
-    String employeeNo = getCellValue(row, 0);
-    String startDate = getCellValue(row, 28); // index 28 untuk startDate
+    @Transactional
+    public String uploadEmployee(MultipartFile file, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        List<EmployeeFiwa> employeesList = new ArrayList<>();
+        List<String> duplikatList = new ArrayList<>();
+        User user = (User) session.getAttribute("user");
+        String factory = user != null ? user.getFactory() : null;
+        // Tambahkan set untuk deteksi duplikat di file
+        Set<String> uniqueKeySet = new HashSet<>();
+        try (InputStream is = file.getInputStream();
+            Workbook workbook = WorkbookFactory.create(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            boolean header = true;
+        while (rows.hasNext()) {
+        Row row = rows.next();
+        if (header) {
+            header = false;
+            continue;
+        }
+        if (row == null || row.getCell(0) == null || row.getCell(0).toString().trim().isEmpty()) {
+            continue;
+        }
+        // Tambahan: skip baris jika kolom pertama adalah "Employee No."
+        if ("Employee No.".equalsIgnoreCase(getCellValue(row, 0))) {
+            continue;
+        }
+        String employeeNo = getCellValue(row, 0);
+        String startDate = getCellValue(row, 28); // index 28 untuk startDate
 
-            // Cek duplikat di file (bukan hanya di database)
-            String uniqueKey = employeeNo + "_" + startDate;
-            if (uniqueKeySet.contains(uniqueKey)) {
-                continue; // skip baris duplikat di file
+                // Cek duplikat di file (bukan hanya di database)
+                String uniqueKey = employeeNo + "_" + startDate;
+                if (uniqueKeySet.contains(uniqueKey)) {
+                    continue; // skip baris duplikat di file
+                }
+                uniqueKeySet.add(uniqueKey);
+
+                // Cek apakah data sudah ada di database
+                boolean exists = employeeFiwaRepository.existsByEmployeeNoAndStartDate(employeeNo, startDate);
+                if (exists) {
+                    duplikatList.add(employeeNo + " (" + startDate + ")");
+                    continue;
+                }
+
+                EmployeeFiwa employee = new EmployeeFiwa();
+                employee.setEmployeeNo(employeeNo);
+                employee.setName(getCellValue(row, 1));
+                employee.setGender(getCellValue(row, 2));
+                employee.setDeptCode(getCellValue(row, 11));
+                employee.setGroupName(getCellValue(row, 12));
+                employee.setStartDate(startDate);
+                employee.setFactory(factory); // Set factory sesuai user login
+                employeesList.add(employee);
+
+                employee.setStatus("AKTIF");
+                employee.setResignDate(null);
+
             }
-            uniqueKeySet.add(uniqueKey);
 
-            // Cek apakah data sudah ada di database
-            boolean exists = employeeFiwaRepository.existsByEmployeeNoAndStartDate(employeeNo, startDate);
-            if (exists) {
-                duplikatList.add(employeeNo + " (" + startDate + ")");
-                continue;
+            if (!employeesList.isEmpty()) {
+                employeeFiwaRepository.saveAll(employeesList);
+                employeeFiwaRepository.flush();
+                redirectAttributes.addFlashAttribute("success", "Data berhasil diupload: " + employeesList.size());
             }
-
-            EmployeeFiwa employee = new EmployeeFiwa();
-            employee.setEmployeeNo(employeeNo);
-            employee.setName(getCellValue(row, 1));
-            employee.setGender(getCellValue(row, 2));
-            employee.setDeptCode(getCellValue(row, 11));
-            employee.setGroupName(getCellValue(row, 12));
-            employee.setStartDate(startDate);
-            employee.setFactory(factory); // Set factory sesuai user login
-            employeesList.add(employee);
+            if (!duplikatList.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Data duplikat tidak diupload: " + String.join(", ", duplikatList));
+            }
+            if (employeesList.isEmpty() && duplikatList.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Tidak ada data yang disimpan (list kosong).");
+            }
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Gagal upload file: " + e.getMessage());
+            }
+        // Ambil data terbaru sesuai factory user login
+        List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactory(factory);
+        model.addAttribute("employeeList", employeeList);
+        if (user != null) {
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("factory", user.getFactory());
+            boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(user.getAuthority());
+            model.addAttribute("canCrudEmployee", canCrudEmployee);
         }
 
-        if (!employeesList.isEmpty()) {
-            employeeFiwaRepository.saveAll(employeesList);
-            employeeFiwaRepository.flush();
-            model.addAttribute("success", "Data berhasil diupload: " + employeesList.size());
-        }
-        if (!duplikatList.isEmpty()) {
-            model.addAttribute("error", "Data duplikat tidak diupload: " + String.join(", ", duplikatList));
-        }
-        if (employeesList.isEmpty() && duplikatList.isEmpty()) {
-            model.addAttribute("error", "Tidak ada data yang disimpan (list kosong).");
-        }
-    } catch (Exception e) {
-        model.addAttribute("error", "Gagal upload file: " + e.getMessage());
+        // Audit log upload karyawan aktif
+        AuditLog log = new AuditLog();
+        log.setUsername(user != null ? user.getUsername() : "unknown");
+        log.setIp(request.getRemoteAddr());
+        log.setAction("UPLOAD_EMPLOYEE");
+        log.setEntityName("EmployeeFiwa");
+        log.setEntityId(factory);
+        log.setDescription("Upload data karyawan aktif: " + employeesList.size() + " data, duplikat: " + duplikatList.size());
+        log.setTimestamp(java.time.LocalDateTime.now());
+        auditLogRepository.save(log);
+
+        model.addAttribute("ip", request.getRemoteAddr());
+        return "redirect:/dataEmployee";
     }
-    // Ambil data terbaru sesuai factory user login
-    List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactory(factory);
-    model.addAttribute("employeeList", employeeList);
-    if (user != null) {
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("factory", user.getFactory());
-    }
-    model.addAttribute("ip", request.getRemoteAddr());
-    return "dataEmployee";
-}
 
     private String getCellValue(Row row, int col) {
         Cell cell = row.getCell(col);
@@ -144,23 +173,189 @@ public String uploadEmployee(MultipartFile file, Model model, HttpSession sessio
     }
 
     @PostMapping("/add-employee")
-    public String addEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, RedirectAttributes redirectAttributes) {
+    public String addEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, HttpSession session, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser != null) {
+            employeeFiwa.setFactory(loginUser.getFactory()); // Set factory sesuai user login
+            // Cek duplikasi Employee No di factory yang sama
+            boolean exists = employeeFiwaRepository.existsByEmployeeNoAndFactory(employeeFiwa.getEmployeeNo(), loginUser.getFactory());
+            if (exists) {
+                redirectAttributes.addFlashAttribute("error", "Employee No sudah terdaftar di factory Anda!");
+                return "redirect:/dataEmployee";
+            }
+        }
+
+        employeeFiwa.setStatus("AKTIF");
+        employeeFiwa.setResignDate(null);
+
         employeeFiwaRepository.save(employeeFiwa);
         redirectAttributes.addFlashAttribute("success", "Karyawan berhasil ditambah!");
+
+        // Audit log
+        AuditLog log = new AuditLog();
+        log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+        log.setIp(request.getRemoteAddr());
+        log.setAction("ADD_EMPLOYEE");
+        log.setEntityName("EmployeeFiwa");
+        log.setEntityId(employeeFiwa.getEmployeeNo());
+        log.setDescription("Tambah karyawan: " + employeeFiwa.getName());
+        log.setTimestamp(java.time.LocalDateTime.now());
+        auditLogRepository.save(log);
+
         return "redirect:/dataEmployee";
     }
 
     @PostMapping("/edit-employee")
-    public String editEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, RedirectAttributes redirectAttributes) {
-        employeeFiwaRepository.save(employeeFiwa);
+public String editEmployee(@ModelAttribute EmployeeFiwa employeeFiwa, HttpSession session, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    EmployeeFiwa existing = employeeFiwaRepository.findById(employeeFiwa.getId()).orElse(null);
+    if (existing != null) {
+        existing.setEmployeeNo(employeeFiwa.getEmployeeNo());
+        existing.setName(employeeFiwa.getName());
+        existing.setGender(employeeFiwa.getGender());
+        existing.setDeptCode(employeeFiwa.getDeptCode());
+        existing.setGroupName(employeeFiwa.getGroupName());
+        existing.setStartDate(employeeFiwa.getStartDate());
+
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser != null) {
+            existing.setFactory(loginUser.getFactory());
+        }
+
+        employeeFiwaRepository.save(existing);
         redirectAttributes.addFlashAttribute("success", "Karyawan berhasil diupdate!");
+
+        // Audit log
+        AuditLog log = new AuditLog();
+        log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+        log.setIp(request.getRemoteAddr());
+        log.setAction("EDIT_EMPLOYEE");
+        log.setEntityName("EmployeeFiwa");
+        log.setEntityId(existing.getEmployeeNo());
+        log.setDescription("Edit karyawan: " + existing.getName());
+        log.setTimestamp(java.time.LocalDateTime.now());
+        auditLogRepository.save(log);
+    } else {
+        redirectAttributes.addFlashAttribute("error", "Data karyawan tidak ditemukan!");
+    }
+    return "redirect:/dataEmployee";
+}
+
+   @PostMapping("/delete-employee/{id}")
+public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
+    EmployeeFiwa emp = employeeFiwaRepository.findById(id).orElse(null);
+    employeeFiwaRepository.deleteById(id);
+    redirectAttributes.addFlashAttribute("success", "Karyawan berhasil dihapus!");
+
+    // Audit log
+    User loginUser = (User) session.getAttribute("user");
+    AuditLog log = new AuditLog();
+    log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+    log.setIp(request.getRemoteAddr());
+    log.setAction("DELETE_EMPLOYEE");
+    log.setEntityName("EmployeeFiwa");
+    log.setEntityId(emp != null ? emp.getEmployeeNo() : String.valueOf(id));
+    log.setDescription("Hapus karyawan: " + (emp != null ? emp.getName() : "-"));
+    log.setTimestamp(java.time.LocalDateTime.now());
+    auditLogRepository.save(log);
+
+    return "redirect:/dataEmployee";
+}
+
+    @PostMapping("/upload-employee-resign")
+    @Transactional
+    public String uploadEmployeeResign(MultipartFile file, HttpSession session, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        List<String> notFoundList = new ArrayList<>();
+        List<String> updatedList = new ArrayList<>();
+        User user = (User) session.getAttribute("user");
+        String factory = user != null ? user.getFactory() : null;
+
+        try (InputStream is = file.getInputStream();
+            Workbook workbook = WorkbookFactory.create(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            boolean header = true;
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (header) {
+                    header = false;
+                    continue;
+                }
+                if (row == null || row.getCell(0) == null || row.getCell(0).toString().trim().isEmpty()) {
+                    continue;
+                }
+                String employeeNo = getCellValue(row, 4);
+                String resignDate = getCellValue(row, 11); // Asumsi kolom ke-1 adalah resign_date
+
+                // Cari karyawan berdasarkan employeeNo dan factory
+                EmployeeFiwa emp = employeeFiwaRepository.findByEmployeeNoAndFactory(employeeNo, factory);
+                if (emp != null) {
+                    emp.setStatus("RESIGN");
+                    emp.setResignDate(resignDate);
+                    employeeFiwaRepository.save(emp);
+                    updatedList.add(employeeNo);
+                } else {
+                    notFoundList.add(employeeNo);
+                }
+            }
+
+            if (!updatedList.isEmpty()) {
+                redirectAttributes.addFlashAttribute("success", "Data resign berhasil diupdate: " + updatedList.size());
+            }
+            if (!notFoundList.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "NIK tidak ditemukan: " + String.join(", ", notFoundList));
+            }
+            if (updatedList.isEmpty() && notFoundList.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Tidak ada data yang diproses.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Gagal upload file: " + e.getMessage());
+        }
+
+        // Audit log upload resign
+        AuditLog log = new AuditLog();
+        log.setUsername(user != null ? user.getUsername() : "unknown");
+        log.setIp(request.getRemoteAddr()); // <-- simpan IP user
+        log.setAction("UPLOAD_EMPLOYEE_RESIGN");
+        log.setEntityName("EmployeeFiwa");
+        log.setEntityId(factory);
+        log.setDescription("Upload data resign: update " + updatedList.size() + ", not found: " + notFoundList.size());
+        log.setTimestamp(java.time.LocalDateTime.now());
+        auditLogRepository.save(log);
+
         return "redirect:/dataEmployee";
     }
 
-    @PostMapping("/delete-employee/{id}")
-    public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        employeeFiwaRepository.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Karyawan berhasil dihapus!");
-        return "redirect:/dataEmployee";
+    @PostMapping("/queryEmployee")
+    public String queryEmployee(
+        @RequestParam(required = false) String employeeNo,
+        Model model, HttpSession session, HttpServletRequest request) {
+
+        User loginUser = (User) session.getAttribute("user");
+        String factory = loginUser != null ? loginUser.getFactory() : null;
+        List<EmployeeFiwa> employeeList;
+
+       if (employeeNo != null && !employeeNo.isEmpty()) {
+            // Query by Employee No
+            employeeList = employeeFiwaRepository.findByFactoryAndEmployeeNo(factory, employeeNo);
+        } else {
+            // Jika tidak ada input, tampilkan semua data
+            employeeList = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
+        }
+
+        // Tambahkan atribut model yang dibutuhkan template
+        model.addAttribute("employeeList", employeeList);
+
+        if (loginUser != null) {
+            model.addAttribute("username", loginUser.getUsername());
+            model.addAttribute("factory", loginUser.getFactory());
+            model.addAttribute("role", loginUser.getRole());
+            boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
+            model.addAttribute("canCrudEmployee", canCrudEmployee);
+        }
+        model.addAttribute("employeeFiwa", new EmployeeFiwa());
+        model.addAttribute("ip", request.getRemoteAddr());
+
+        return "dataEmployee";
     }
+
 }

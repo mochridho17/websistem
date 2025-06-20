@@ -18,7 +18,7 @@
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="/home">
-            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
+            <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -84,26 +84,25 @@
     <!-- Display success or error messages -->
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h2>Data Users</h2>
-        
-    </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- <h2>Data Users</h2> -->
+   </div>
     <form th:action="@{/dataUsers}" th:object="${user}" method="post" class="row g-3 mb-3">
     <div class="col-auto">
         <input type="text" th:field="*{username}" class="form-control" placeholder="Username">
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Query</button>
+        <button type="submit" class="btn btn-dark">Query</button>
     </div>
     <div class="col-auto">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
             Tambah User
         </button>
     </div>
 </form>
     <div class="table-responsive">
     <table class="table table-bordered" id="userTable">
-                        <thead>
+                        <thead class="table-dark">
                         <tr>
                             <th>ID</th>
                             <th>Username</th>
@@ -111,12 +110,13 @@
                             <th>Factory</th>
                             <th>Created Person</th>
                             <th>Role</th>
+                            <th>Authority</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:if="${userList == null or #lists.isEmpty(userList)}">
-                            <td colspan="6" class="text-center">Tidak ada data user</td>
+                            <td colspan="8" class="text-center">Tidak ada data user</td>
                         </tr>
                         <tr th:each="user : ${userList}">
                             <td th:text="${user.id}"></td>
@@ -125,25 +125,28 @@
                             <td th:text="${user.factory}"></td>
                             <td th:text="${user.createdPerson}"></td>
                             <td th:text="${user.role}"></td>
+                            <td th:text="${user.authority}"></td>
                             <td>
-                               <button type="button" class="btn btn-warning btn-sm btn-edit"
+                               <button type="button" class="btn btn-dark btn-sm btn-edit"
                                         th:data-id="${user.id}"
                                         th:data-username="${user.username}"
                                         th:data-password="${user.password}"
                                         th:data-factory="${user.factory}"
-                                        th:data-createdperson="${user.createdPerson}">
+                                        th:data-createdperson="${user.createdPerson}"
+                                        th:data-authority="${user.authority}">
                                     Edit
                                 </button>
                                 <!-- Tombol Hapus -->
                                <form th:action="@{'/delete-user/' + ${user.id}}" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
+                                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
                                </form>
                             </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                <!-- Modal Edit User -->
+        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" id="editUserForm" method="post" th:action="@{/edit-user}">
       <div class="modal-header">
@@ -171,58 +174,74 @@
           <label class="form-label">Created Person:</label>
           <input type="text" id="editCreatedPerson" name="createdPerson" class="form-control" readonly />
         </div>
-      </div>
+        <div class="mb-3">
+            <label class="form-label">Authority</label>
+            <select id="editAuthority" name="authority" class="form-select" required>
+                <option value="NO_ACCESS">Tidak ada Akses</option>
+                <option value="CRUD_EMPLOYEE">CRUD_EMPLOYEE</option>
+            </select>
+        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-dark">Simpan Perubahan</button>
       </div>
     </form>
   </div>
 </div>
-    <!-- Modal Tambah User -->
-                <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form class="modal-content" th:action="@{/add-user}" th:object="${user}" method="post">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addUserModalLabel">Tambah User Baru</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Username:</label>
-                                    <input type="text" th:field="*{username}" class="form-control" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Password:</label>
-                                    <input type="password" th:field="*{password}" class="form-control" required />
-                                </div>
-                                <div class="mb-3">
-                                <label class="form-label">Factory:</label>
-                                <select th:field="*{factory}" class="form-select" required>
-                                    <option value="" th:selected="*{factory} == null" disabled>Pilih Factory</option>
-                                    <option value="FIU">FIU</option>
-                                    <option value="FIWA">FIWA</option>
-                                </select>
-                                <div class="mb-3">
-                                <label class="form-label">Role:</label>
-                                <select th:field="*{role}" class="form-select" required>
-                                    <option value="" th:selected="*{role} == null" disabled>Pilih Role</option>
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="USER">USER</option>
-                                </select>
-                             </div>
-                             <div class="mb-3">
-                                <label class="form-label">Created Person:</label>
-                                <input type="text" class="form-control" th:value="${username}" readonly />
-                            </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
+</main>
+<!-- Modal Tambah User -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/add-user}" th:object="${user}" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Tambah User Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Username:</label>
+                    <input type="text" th:field="*{username}" class="form-control" required />
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Password:</label>
+                    <input type="password" th:field="*{password}" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Factory:</label>
+                    <select th:field="*{factory}" class="form-select" required>
+                        <option value="" th:selected="*{factory} == null" disabled>Pilih Factory</option>
+                        <option value="FIU">FIU</option>
+                        <option value="FIWA">FIWA</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role:</label>
+                    <select th:field="*{role}" class="form-select" required>
+                        <option value="" th:selected="*{role} == null" disabled>Pilih Role</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="USER">USER</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Created Person:</label>
+                    <input type="text" th:field="*{createdPerson}" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Authority</label>
+                    <select th:field="*{authority}" class="form-select" required>
+                        <option value="" th:selected="*{authority} == null or *{authority} == ''" disabled>Pilih Authority</option>
+                        <option value="NO_ACCESS">Tidak ada Akses</option>
+                        <option value="CRUD_EMPLOYEE">CRUD_EMPLOYEE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-dark">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
 </main>
 
 <!-- ...existing code... -->
@@ -249,7 +268,9 @@ $(document).ready(function () {
     var password = $(this).data('password');
     var factory = $(this).data('factory');
     var createdPerson = $(this).data('createdperson');
+    var authority = $(this).data('authority');
 
+    $('#editAuthority').val($(this).data('authority'));
     $('#editId').val(id);
     $('#editUsername').val(username);
     $('#editPassword').val(password);

@@ -7,15 +7,16 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+    <div class="system-title ">Staff Information System</div>
     <div class="container">
         <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
             <div class="col-md-4">
                 <div class="card login-card shadow-lg">
                     <div class="card-body">
-                        <h3 class="card-title text-center mb-4">LOGIN WEB</h3>
+                        <h3 class="card-title text-center mb-4">Login to SIS</h3>
                         <form method="post" action="/login">
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
+                                <label for="username" class="form-label ">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" required autofocus>
                             </div>
                             <div class="mb-3">
@@ -30,11 +31,11 @@
                                     <option value="FIWA">FIWA</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mb-2">Login</button>
+                            <button type="submit" class="btn btn-outline-light w-100 mb-2 fw-bold">Login</button>
                             <div th:if="${error}" class="alert alert-danger text-center mt-2" th:text="${error}"></div>
                             <div>
                                 <p class="text-center mt-3">
-                                    <a href="/forgot-password" class="text-decoration-none" onclick="showLangAlert(event)">Forgot Password?</a>
+                                    <a href="/forgot-password" class="text-decoration-none text-white fw-bold" onclick="showLangAlert(event)">Forgot Password?</a>
                                 </p>
                             </div>
                         </form>

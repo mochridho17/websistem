@@ -153,17 +153,17 @@ body {
 .login-card .form-control:focus, .login-card .form-select:focus {
     background: #222;
     color: #fff;
-    border-color: #0d6efd;
+    border-color: #fff;
     box-shadow: none;
 }
 .login-card .btn-primary {
-    background: #4e4e4e;
+    background: #fff;
     border: none;
     font-weight: bold;
     letter-spacing: 1px;
 }
 .login-card .btn-primary:hover {
-    background: #0056b3;
+    background: #fff;
 }
 .login-card .card-title {
     letter-spacing: 2px;
@@ -175,5 +175,20 @@ body {
     border: none;
 }
 .login-card label {
-    color: #bbb;
+    color: #fff;
+}
+
+/* Nama sistem di pojok kiri atas */
+.system-title {
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    z-index: 9999;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    pointer-events: none;
+    user-select: none;
 }

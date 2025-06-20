@@ -11,7 +11,7 @@
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="/home">
-            <i class="bi bi-grid-1x2-fill me-2"></i> Web - FV
+            <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -72,12 +72,12 @@
     </div>
 </nav>
             <!-- Main Content -->
-            <main class="col-md-10 ms-sm-auto px-4">
-                <!-- <div class="alert alert-success text-center mt-4">
-                    <h2>Selamat Datang di Dashboard!</h2>
-                    <p>Login berhasil.</p>
-                </div> -->
-                <div class="row mt-4">
+           <main class="col-md-10 ms-sm-auto px-4">
+                <div class="alert alert-info text-center">
+                    <h4>Selamat Datang, <span th:text="${username}">User</span>!</h4>
+                    <p>Silakan pilih menu di bawah untuk mengelola data sistem.</p>
+                </div>
+                <div class="row mt-2 justify-content-center">
                     <div class="col-md-3 mb-3" th:if="${role == 'ADMIN'}">
                        <div class="card text-white colorbg shadow-sm border-0">
                             <div class="card-body d-flex flex-column align-items-start">
@@ -136,8 +136,10 @@
                         </div>
                     </div> -->
                 </div>
-                
-            </main>
+                <div class="alert alert-success text-center" th:if="${role == 'ADMIN'}">
+                    User online saat ini: <b id="userOnlineCount" th:text="${userOnline}">0</b>
+                </div>
+            </main> 
         </div>
     </div>
     <script>
@@ -145,6 +147,15 @@
             event.preventDefault();
             alert('Sedang dalam pengembangan.');
         }
+    </script>
+    <script>
+        setInterval(function() {
+            fetch('/user-online-count')
+                .then(response => response.text())
+                .then(count => {
+                    document.getElementById('userOnlineCount').textContent = count;
+                });
+        }, 3000); // update setiap 3 detik
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

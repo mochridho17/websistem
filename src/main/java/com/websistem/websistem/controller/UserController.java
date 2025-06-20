@@ -31,26 +31,28 @@ public class UserController {
 
     @GetMapping("/dataUsers")
     public String showUserPage(Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute("user");
-        if (loginUser == null) {
-            redirectAttributes.addFlashAttribute("error", "Silakan login terlebih dahulu.");
-            return "redirect:/login";
-        }
-        // Hanya ADMIN yang bisa akses dataUsers
-        if (!"ADMIN".equals(loginUser.getRole())) {
-            redirectAttributes.addFlashAttribute("error", "Anda tidak memiliki akses ke halaman ini.");
-            return "redirect:/home";
-        }
-        
-        model.addAttribute("user", new User());
-        model.addAttribute("username", loginUser.getUsername());
-        model.addAttribute("factory", loginUser.getFactory());
-        model.addAttribute("ip", request.getRemoteAddr());
-        model.addAttribute("userList", userRepository.findAll());
-        model.addAttribute("role", loginUser.getRole());
-    
-        return "dataUsers";
+    User loginUser = (User) session.getAttribute("user");
+    if (loginUser == null) {
+        redirectAttributes.addFlashAttribute("error", "Silakan login terlebih dahulu.");
+        return "redirect:/login";
     }
+    if (!"ADMIN".equals(loginUser.getRole())) {
+        redirectAttributes.addFlashAttribute("error", "Anda tidak memiliki akses ke halaman ini.");
+        return "redirect:/home";
+    }
+
+    User userForm = new User();
+    userForm.setCreatedPerson(loginUser.getUsername());
+    model.addAttribute("user", userForm);
+
+    model.addAttribute("username", loginUser.getUsername());
+    model.addAttribute("factory", loginUser.getFactory());
+    model.addAttribute("ip", request.getRemoteAddr());
+    model.addAttribute("userList", userRepository.findAll());
+    model.addAttribute("role", loginUser.getRole());
+
+    return "dataUsers";
+}
 
     @PostMapping("/dataUsers")
     public String queryUsers(@ModelAttribute("user") User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -83,35 +85,43 @@ public class UserController {
     }
 
     @PostMapping("/add-user")
-    public String addUser(@ModelAttribute User user, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        userRepository.save(user);
-
-        User loginUser = (User) session.getAttribute("user");
-        AuditLog log = new AuditLog();
-        log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
-        log.setIp(request.getRemoteAddr());
-        log.setAction("ADD_USER");
-        log.setEntityName("User");
-        log.setEntityId(String.valueOf(user.getId()));
-        log.setDescription("Tambah user: " + user.getUsername());
-        log.setTimestamp(LocalDateTime.now());
-        auditLogRepository.save(log);
-
-        redirectAttributes.addFlashAttribute("success", "User berhasil ditambah!");
+public String addUser(@ModelAttribute User user, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    // Cek duplikasi username di factory yang sama
+    List<User> existingUsers = userRepository.findByUsernameAndFactory(user.getUsername(), user.getFactory());
+    if (!existingUsers.isEmpty()) {
+        redirectAttributes.addFlashAttribute("error", "User dengan username dan factory yang sama sudah ada!");
         return "redirect:/dataUsers";
     }
 
-    @PostMapping("/edit-user")
-    public String editUser(@ModelAttribute User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        User existing = userRepository.findById(user.getId()).orElse(null);
-        if (existing != null) {
-            existing.setUsername(user.getUsername());
-            existing.setPassword(user.getPassword());
-            existing.setFactory(user.getFactory());
-            // createdPerson tidak diubah
-            userRepository.save(existing);
+    userRepository.save(user);
 
-            // --- Audit log di sini ---
+    User loginUser = (User) session.getAttribute("user");
+    AuditLog log = new AuditLog();
+    log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+    log.setIp(request.getRemoteAddr());
+    log.setAction("ADD_USER");
+    log.setEntityName("User");
+    log.setEntityId(String.valueOf(user.getId()));
+    log.setDescription("Tambah user: " + user.getUsername());
+    log.setTimestamp(LocalDateTime.now());
+    auditLogRepository.save(log);
+
+    redirectAttributes.addFlashAttribute("success", "User berhasil ditambah!");
+    return "redirect:/dataUsers";
+}
+
+    @PostMapping("/edit-user")
+public String editUser(@ModelAttribute User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    User existing = userRepository.findById(user.getId()).orElse(null);
+    if (existing != null) {
+        existing.setUsername(user.getUsername());
+        existing.setPassword(user.getPassword());
+        existing.setFactory(user.getFactory());
+        existing.setAuthority(user.getAuthority()); // <-- Tambahkan baris ini!
+        // createdPerson tidak diubah
+        userRepository.save(existing);
+
+        // Audit log ...
         User loginUser = (User) session.getAttribute("user");
         AuditLog log = new AuditLog();
         log.setIp(request.getRemoteAddr());
@@ -122,14 +132,13 @@ public class UserController {
         log.setDescription("Edit user: " + user.getUsername());
         log.setTimestamp(LocalDateTime.now());
         auditLogRepository.save(log);
-        // --- End audit log ---\
 
-            redirectAttributes.addFlashAttribute("success", "User berhasil diupdate!");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "User tidak ditemukan!");
-        }
-        return "redirect:/dataUsers";
+        redirectAttributes.addFlashAttribute("success", "User berhasil diupdate!");
+    } else {
+        redirectAttributes.addFlashAttribute("error", "User tidak ditemukan!");
     }
+    return "redirect:/dataUsers";
+}
 
     @PostMapping("/delete-user/{id}")
 public String deleteUser(@PathVariable Long id, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {

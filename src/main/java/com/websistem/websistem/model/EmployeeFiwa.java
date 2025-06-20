@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "employee_fiwa")
+@Table(
+    name = "employee_fiwa",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"employee_no", "factory"})
+)
 @Data
 public class EmployeeFiwa {
     @Id
@@ -31,4 +34,10 @@ public class EmployeeFiwa {
 
     @Column(name = "factory")
     private String factory;
+
+    @Column(name = "status")
+    private String status; // "AKTIF" atau "RESIGN"
+
+    @Column(name = "resign_date")
+    private String resignDate; // atau LocalDate jika ingin tanggal
 }

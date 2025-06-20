@@ -23,7 +23,7 @@ public class AuditLogController {
 
    @GetMapping("/audit-log")
 public String showAuditLog(Model model, HttpSession session, HttpServletRequest request) {
-    List<AuditLog> logs = auditLogRepository.findAll();
+    List<AuditLog> logs = auditLogRepository.findAllByOrderByTimestampDesc();
     if (logs == null) {
         logs = new ArrayList<>();
     }
