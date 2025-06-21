@@ -3876,3 +3876,42 @@ org.springframework.expression.spel.SpelEvaluationException: EL1001E: Type conve
 2025-06-20T17:04:09.510+07:00  INFO 22672 --- [websistem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-06-20T17:04:09.511+07:00  INFO 22672 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Shutdown initiated...
 2025-06-20T17:04:09.512+07:00  INFO 22672 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Shutdown completed.
+2025-06-20T19:13:16.248+07:00  INFO 15600 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : Starting WebsistemApplication using Java 18.0.2.1 with PID 15600 (D:\RIDHO\Springboot project\websistem\target\classes started by LRPC-00009 in D:\RIDHO\Springboot project\websistem)
+2025-06-20T19:13:16.250+07:00  INFO 15600 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-06-20T19:13:16.280+07:00  INFO 15600 --- [websistem] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-06-20T19:13:16.280+07:00  INFO 15600 --- [websistem] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-06-20T19:13:16.684+07:00  INFO 15600 --- [websistem] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-20T19:13:16.736+07:00  INFO 15600 --- [websistem] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 47 ms. Found 4 JPA repository interfaces.
+2025-06-20T19:13:17.134+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-06-20T19:13:17.145+07:00  INFO 15600 --- [websistem] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-20T19:13:17.146+07:00  INFO 15600 --- [websistem] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-20T19:13:17.187+07:00  INFO 15600 --- [websistem] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-20T19:13:17.187+07:00  INFO 15600 --- [websistem] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 906 ms
+2025-06-20T19:13:17.318+07:00  INFO 15600 --- [websistem] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-20T19:13:17.359+07:00  INFO 15600 --- [websistem] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-20T19:13:17.381+07:00  INFO 15600 --- [websistem] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-20T19:13:17.590+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-20T19:13:17.610+07:00  INFO 15600 --- [websistem] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-20T19:13:17.779+07:00  INFO 15600 --- [websistem] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@426a73b6
+2025-06-20T19:13:17.781+07:00  INFO 15600 --- [websistem] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-20T19:13:17.834+07:00  INFO 15600 --- [websistem] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-20T19:13:18.508+07:00  INFO 15600 --- [websistem] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-20T19:13:18.595+07:00  INFO 15600 --- [websistem] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20T19:13:18.763+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-20T19:13:19.263+07:00  WARN 15600 --- [websistem] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-20T19:13:19.277+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-06-20T19:13:19.478+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-06-20T19:13:19.503+07:00  INFO 15600 --- [websistem] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-06-20T19:13:19.512+07:00  INFO 15600 --- [websistem] [restartedMain] c.w.websistem.WebsistemApplication       : Started WebsistemApplication in 3.57 seconds (process running for 3.917)
+2025-06-20T19:14:01.581+07:00  INFO 15600 --- [websistem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-20T19:14:01.748+07:00  INFO 15600 --- [websistem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-20T19:14:01.751+07:00  INFO 15600 --- [websistem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-20T19:14:01.753+07:00  INFO 15600 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-20T19:14:01.755+07:00  INFO 15600 --- [websistem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
