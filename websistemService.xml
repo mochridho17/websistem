@@ -1,0 +1,8 @@
+<service>
+  <id>websistem</id>
+  <name>Websistem Service</name>
+  <description>Spring Boot Websistem Service</description>
+  <executable>java</executable>
+  <arguments>-jar "D:\Project Free View\websistem\target\websistem.jar"</arguments>
+  <logpath>D:\Project Free View\websistem\logs</logpath>
+</service>

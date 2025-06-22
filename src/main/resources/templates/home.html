@@ -10,6 +10,9 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
+        <button class="btn btn-outline-secondary me-2" id="sidebarToggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
         <a class="navbar-brand" href="/home">
             <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
@@ -40,7 +43,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-<nav class="col-md-2 d-none d-md-block sidebar">
+<nav class="col-md-2 sidebar sidebar-animated" id="sidebarMenu">
     <div class="position-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -72,7 +75,7 @@
     </div>
 </nav>
             <!-- Main Content -->
-           <main class="col-md-10 ms-sm-auto px-4">
+           <main class="col-md-10 ms-sm-auto px-4" id="mainContent">
                 <div class="alert alert-info text-center">
                     <h4>Selamat Datang, <span th:text="${username}">User</span>!</h4>
                     <p>Silakan pilih menu di bawah untuk mengelola data sistem.</p>
@@ -157,6 +160,20 @@
                 });
         }, 3000); // update setiap 3 detik
     </script>
+    <script>
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebarMenu');
+        var main = document.getElementById('mainContent');
+        sidebar.classList.toggle('d-none');
+        if (sidebar.classList.contains('d-none')) {
+            main.classList.remove('col-md-10');
+            main.classList.add('col-md-12');
+        } else {
+            main.classList.remove('col-md-12');
+            main.classList.add('col-md-10');
+        }
+    });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

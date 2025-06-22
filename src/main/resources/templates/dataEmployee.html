@@ -16,6 +16,9 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
+       <button class="btn btn-outline-secondary me-2" id="sidebarToggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
         <a class="navbar-brand" href="/home">
             <i class="bi bi-grid-1x2-fill me-2"></i> SIS
         </a>
@@ -46,7 +49,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-<nav class="col-md-2 d-none d-md-block sidebar">
+<nav class="col-md-2 sidebar sidebar-animated" id="sidebarMenu">
     <div class="position-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -79,7 +82,7 @@
 </nav>
             <!-- Main Content -->
             <!-- ...existing code... -->
-<main class="col-md-10 ms-sm-auto px-4">
+<main class="col-md-10 ms-sm-auto px-4" id="mainContent">
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div class="d-flex justify-content-between align-items-center">
@@ -110,7 +113,7 @@
         <button type="submit" class="btn btn-dark">Query</button>
     </form>
 </div>
-    <div class="table-responsive">
+    <div class="table-responsive mt-2">
     <table id="employeeTable" class="table table-bordered table-striped">
       <thead class="table-dark">
         <tr>
@@ -153,6 +156,51 @@
         </tr>
       </tbody>
     </table>
+     <div class="d-flex justify-content-between align-items-center mt-2">
+    <!-- Showing entries -->
+        <div>
+            <span>
+                Showing
+                <span th:text="${(currentPage?:0) * (pageSize?:15) + (employeeList.size() > 0 ? 1 : 0)}"></span>
+                to
+                <span th:text="${(currentPage?:0) * (pageSize?:15) + employeeList.size()}"></span>
+                of
+                <span th:text="${employeePage != null ? employeePage.totalElements : 0}"></span>
+                entries
+            </span>
+        </div>
+    <!-- PAGINATION SERVER-SIDE -->
+    <div class="pagination mb-0" th:if="${totalPages > 1}">
+        <form method="post" action="/queryEmployee" id="paginationForm" class="d-inline">
+            <input type="hidden" name="employeeNo" th:value="${param.employeeNo}" />
+            <input type="hidden" name="size" th:value="${pageSize}" />
+            <ul class="pagination mb-0">
+                <li th:classappend="${(currentPage?:0) == 0} ? 'disabled'">
+                    <button class="page-link" type="submit" name="page"
+                            th:value="${(currentPage?:0) - 1}"
+                            th:disabled="${(currentPage?:0) == 0}">Previous</button>
+                </li>
+                <li th:each="i : ${#numbers.sequence(
+                        (totalPages?:1) <= 5 ? 0 : 
+                            ((currentPage?:0) <= 2 ? 0 : 
+                                ((currentPage?:0) >= (totalPages?:1)-3 ? (totalPages?:1)-5 : (currentPage?:0)-2)
+                            ),
+                        (totalPages?:1) <= 5 ? (totalPages?:1)-1 : 
+                            ((currentPage?:0) <= 2 ? 4 : 
+                                ((currentPage?:0) >= (totalPages?:1)-3 ? (totalPages?:1)-1 : (currentPage?:0)+2)
+                            )
+                    )}"
+                    th:classappend="${i == (currentPage?:0)} ? 'active'">
+                    <button class="page-link" type="submit" name="page" th:value="${i}" th:text="${i+1}"></button>
+                </li>
+                <li th:classappend="${(currentPage?:0) == (totalPages?:1)-1} ? 'disabled'">
+                    <button class="page-link" type="submit" name="page"
+                            th:value="${(currentPage?:0) + 1}"
+                            th:disabled="${(currentPage?:0) == (totalPages?:1)-1}">Next</button>
+                </li>
+            </ul>
+        </form>
+    </div>
 </div>
  
 <!-- Modal Tambah Karyawan -->
@@ -319,8 +367,10 @@ $(document).ready(function () {
     var fileName = 'DataKaryawan_' + tanggal;
 
     var table = $('#employeeTable').DataTable({
+        paging: false, // <-- tambahkan ini
+        info: false,
         pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
+        // lengthMenu: [5, 10, 25, 50, 100],
         dom: 'Blfrtip',
         buttons: [
             {
@@ -340,8 +390,10 @@ $(document).ready(function () {
         }
     });
 
-    $('#exportExcelBtn').on('click', function() {
-        table.button('.buttons-excel').trigger();
+     $('#exportExcelBtn').on('click', function() {
+        if (confirm('Yakin export semua data karyawan ke Excel?')) {
+            window.location.href = '/export-employee-excel';
+        }
     });
 
     // Event delegation untuk tombol edit
@@ -358,11 +410,39 @@ $(document).ready(function () {
     });
 });
 </script>
-<script>
+    <script>
         function showLangAlert(event) {
             event.preventDefault();
             alert('Sedang dalam pengembangan.');
         }
     </script>
+    <script>
+        // Toggle sidebar dan simpan state ke localStorage
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            var sidebar = document.getElementById('sidebarMenu');
+            var main = document.getElementById('mainContent');
+            sidebar.classList.toggle('d-none');
+            if (sidebar.classList.contains('d-none')) {
+                main.classList.remove('col-md-10');
+                main.classList.add('col-md-12');
+                localStorage.setItem('sidebarHidden', 'true');
+            } else {
+                main.classList.remove('col-md-12');
+                main.classList.add('col-md-10');
+                localStorage.setItem('sidebarHidden', 'false');
+            }
+        });
+
+        // Saat halaman dimuat, cek state sidebar di localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('sidebarMenu');
+            var main = document.getElementById('mainContent');
+            if (localStorage.getItem('sidebarHidden') === 'true') {
+                sidebar.classList.add('d-none');
+                main.classList.remove('col-md-10');
+                main.classList.add('col-md-12');
+            }
+        });
+</script>
 </body>
 </html>

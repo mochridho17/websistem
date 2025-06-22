@@ -1,0 +1,162 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.0)
+
+2025-06-22T12:04:43.966+07:00  INFO 15152 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : Starting WebsistemApplication v0.0.1-SNAPSHOT using Java 21.0.1 with PID 15152 (D:\Project Free View\websistem\target\websistem.jar started by DESKTOP-E8UJ411$ in D:\Project Free View\websistem)
+2025-06-22T12:04:43.968+07:00  INFO 15152 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-06-22T12:04:44.600+07:00  INFO 15152 --- [websistem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-22T12:04:44.664+07:00  INFO 15152 --- [websistem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 52 ms. Found 4 JPA repository interfaces.
+2025-06-22T12:04:45.200+07:00  INFO 15152 --- [websistem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-06-22T12:04:45.216+07:00  INFO 15152 --- [websistem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-22T12:04:45.216+07:00  INFO 15152 --- [websistem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-22T12:04:45.244+07:00  INFO 15152 --- [websistem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-22T12:04:45.244+07:00  INFO 15152 --- [websistem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1232 ms
+2025-06-22T12:04:45.412+07:00  INFO 15152 --- [websistem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-22T12:04:45.482+07:00  INFO 15152 --- [websistem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-22T12:04:45.520+07:00  INFO 15152 --- [websistem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-22T12:04:45.820+07:00  INFO 15152 --- [websistem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-22T12:04:45.851+07:00  INFO 15152 --- [websistem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-22T12:04:46.032+07:00  INFO 15152 --- [websistem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@68b7bdcb
+2025-06-22T12:04:46.034+07:00  INFO 15152 --- [websistem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-22T12:04:46.098+07:00  INFO 15152 --- [websistem] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-22T12:04:46.873+07:00  INFO 15152 --- [websistem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-22T12:04:46.921+07:00  INFO 15152 --- [websistem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-22T12:04:47.236+07:00  INFO 15152 --- [websistem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-22T12:04:47.912+07:00  WARN 15152 --- [websistem] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-22T12:04:47.932+07:00  INFO 15152 --- [websistem] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-06-22T12:04:48.278+07:00  INFO 15152 --- [websistem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-06-22T12:04:48.286+07:00  INFO 15152 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : Started WebsistemApplication in 4.794 seconds (process running for 5.291)
+2025-06-22T12:06:57.970+07:00  INFO 15152 --- [websistem] [0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-22T12:06:57.970+07:00  INFO 15152 --- [websistem] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-06-22T12:06:57.972+07:00  INFO 15152 --- [websistem] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=? and u1_0.password=? and u1_0.factory=?
+Hibernate: insert into audit_log (action,description,entity_id,entity_name,ip,timestamp,username) values (?,?,?,?,?,?,?)
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: insert into audit_log (action,description,entity_id,entity_name,ip,timestamp,username) values (?,?,?,?,?,?,?)
+2025-06-22T12:07:56.637+07:00  INFO 15152 --- [websistem] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-22T12:07:56.641+07:00  INFO 15152 --- [websistem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-22T12:07:56.643+07:00  INFO 15152 --- [websistem] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-22T12:07:56.645+07:00  INFO 15152 --- [websistem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-22T12:07:56.647+07:00  INFO 15152 --- [websistem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.0)
+
+2025-06-22T12:09:54.869+07:00  INFO 17212 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : Starting WebsistemApplication v0.0.1-SNAPSHOT using Java 21.0.1 with PID 17212 (D:\Project Free View\websistem\target\websistem.jar started by DESKTOP-E8UJ411$ in D:\Project Free View\websistem)
+2025-06-22T12:09:54.872+07:00  INFO 17212 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : No active profile set, falling back to 1 default profile: "default"
+2025-06-22T12:09:55.436+07:00  INFO 17212 --- [websistem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-22T12:09:55.489+07:00  INFO 17212 --- [websistem] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 45 ms. Found 4 JPA repository interfaces.
+2025-06-22T12:09:55.985+07:00  INFO 17212 --- [websistem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-06-22T12:09:55.996+07:00  INFO 17212 --- [websistem] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-22T12:09:55.998+07:00  INFO 17212 --- [websistem] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.41]
+2025-06-22T12:09:56.025+07:00  INFO 17212 --- [websistem] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-22T12:09:56.025+07:00  INFO 17212 --- [websistem] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1114 ms
+2025-06-22T12:09:56.183+07:00  INFO 17212 --- [websistem] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-22T12:09:56.235+07:00  INFO 17212 --- [websistem] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.15.Final
+2025-06-22T12:09:56.267+07:00  INFO 17212 --- [websistem] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-22T12:09:56.519+07:00  INFO 17212 --- [websistem] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-22T12:09:56.548+07:00  INFO 17212 --- [websistem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-22T12:09:56.729+07:00  INFO 17212 --- [websistem] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2b936b04
+2025-06-22T12:09:56.731+07:00  INFO 17212 --- [websistem] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-22T12:09:56.786+07:00  INFO 17212 --- [websistem] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.9
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-22T12:09:57.444+07:00  INFO 17212 --- [websistem] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-22T12:09:57.485+07:00  INFO 17212 --- [websistem] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-22T12:09:57.741+07:00  INFO 17212 --- [websistem] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-22T12:09:58.380+07:00  WARN 17212 --- [websistem] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-22T12:09:58.400+07:00  INFO 17212 --- [websistem] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-06-22T12:09:58.702+07:00  INFO 17212 --- [websistem] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-06-22T12:09:58.715+07:00  INFO 17212 --- [websistem] [           main] c.w.websistem.WebsistemApplication       : Started WebsistemApplication in 4.29 seconds (process running for 4.698)
+2025-06-22T12:10:15.916+07:00  INFO 17212 --- [websistem] [0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-22T12:10:15.917+07:00  INFO 17212 --- [websistem] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-06-22T12:10:15.918+07:00  INFO 17212 --- [websistem] [0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=? and u1_0.password=? and u1_0.factory=?
+Hibernate: insert into audit_log (action,description,entity_id,entity_name,ip,timestamp,username) values (?,?,?,?,?,?,?)
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0
+Hibernate: select al1_0.id,al1_0.action,al1_0.description,al1_0.entity_id,al1_0.entity_name,al1_0.ip,al1_0.timestamp,al1_0.username from audit_log al1_0 order by al1_0.timestamp desc
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0
+Hibernate: select al1_0.id,al1_0.action,al1_0.description,al1_0.entity_id,al1_0.entity_name,al1_0.ip,al1_0.timestamp,al1_0.username from audit_log al1_0 order by al1_0.timestamp desc
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? offset ? rows fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0
+Hibernate: select u1_0.id,u1_0.authority,u1_0.created_person,u1_0.factory,u1_0.password,u1_0.role,u1_0.username from users u1_0 where u1_0.username=? and u1_0.password=? and u1_0.factory=?
+Hibernate: insert into audit_log (action,description,entity_id,entity_name,ip,timestamp,username) values (?,?,?,?,?,?,?)
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=? fetch first ? rows only
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Hibernate: select count(*) from users u1_0
+Hibernate: select count(a1_0.id) from data_attendance a1_0 where a1_0.factory=?
+Hibernate: select count(ef1_0.id) from employee_fiwa ef1_0 where ef1_0.factory=?
+Hibernate: select ef1_0.id,ef1_0.dept_code,ef1_0.employee_no,ef1_0.factory,ef1_0.gender,ef1_0.group_name,ef1_0.name,ef1_0.resign_date,ef1_0.start_date,ef1_0.status from employee_fiwa ef1_0 where ef1_0.factory=? and ef1_0.status=?
+Jumlah data employee: 4638
+2025-06-22T12:11:53.541+07:00  INFO 17212 --- [websistem] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-22T12:11:53.545+07:00  INFO 17212 --- [websistem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-06-22T12:11:53.547+07:00  INFO 17212 --- [websistem] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-22T12:11:53.549+07:00  INFO 17212 --- [websistem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-22T12:11:53.551+07:00  INFO 17212 --- [websistem] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -102,6 +102,7 @@ main {
 
 /* Sidebar */
 .sidebar {
+    height: 93vh;
     background: #222222;
     border-right: 2px solid #444444;
     min-height: 92vh;

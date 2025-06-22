@@ -1,0 +1,28 @@
+2025-06-22T12:04:31.764 INFO  console - Installing service 'Websistem Service (websistem)'...
+2025-06-22T12:04:31.820 INFO  console - Service 'Websistem Service (websistem)' was installed successfully.
+2025-06-22T12:04:41.576 INFO  console - Starting service 'Websistem Service (websistem)'...
+2025-06-22T12:04:41.909 DEBUG console - Starting WinSW in service mode.
+2025-06-22T12:04:41.952 INFO  service - Starting java
+2025-06-22T12:04:42.989 INFO  service - Started process java (15152).
+2025-06-22T12:04:43.016 INFO  service - Service started successfully.
+2025-06-22T12:04:43.236 INFO  console - Service 'Websistem Service (websistem)' started successfully.
+2025-06-22T12:07:56.609 INFO  console - Stopping service 'Websistem Service (websistem)'...
+2025-06-22T12:07:56.632 INFO  service - Stopping websistem
+2025-06-22T12:07:56.634 DEBUG service - ProcessKill 15152
+2025-06-22T12:07:56.689 INFO  service - Child process 'java (15152)' canceled with code 130.
+2025-06-22T12:07:56.700 INFO  service - Finished websistem
+2025-06-22T12:07:56.701 INFO  service - Service stopped successfully.
+2025-06-22T12:07:56.895 INFO  console - Service 'Websistem Service (websistem)' stopped successfully.
+2025-06-22T12:09:53.641 INFO  console - Starting service 'Websistem Service (websistem)'...
+2025-06-22T12:09:53.931 DEBUG console - Starting WinSW in service mode.
+2025-06-22T12:09:53.978 INFO  service - Starting java
+2025-06-22T12:09:54.012 INFO  service - Started process java (17212).
+2025-06-22T12:09:54.038 INFO  service - Service started successfully.
+2025-06-22T12:09:54.223 INFO  console - Service 'Websistem Service (websistem)' started successfully.
+2025-06-22T12:11:53.511 INFO  console - Stopping service 'Websistem Service (websistem)'...
+2025-06-22T12:11:53.535 INFO  service - Stopping websistem
+2025-06-22T12:11:53.536 DEBUG service - ProcessKill 17212
+2025-06-22T12:11:53.587 INFO  service - Child process 'java (17212)' canceled with code 130.
+2025-06-22T12:11:53.599 INFO  service - Finished websistem
+2025-06-22T12:11:53.600 INFO  service - Service stopped successfully.
+2025-06-22T12:11:53.793 INFO  console - Service 'Websistem Service (websistem)' stopped successfully.

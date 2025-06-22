@@ -7,11 +7,15 @@ import com.websistem.websistem.repository.AuditLogRepository;
 import com.websistem.websistem.repository.EmployeeFiwaRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Pageable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -328,22 +333,27 @@ public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectA
     @PostMapping("/queryEmployee")
     public String queryEmployee(
         @RequestParam(required = false) String employeeNo,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "15") int size, // <-- ubah jadi 15
         Model model, HttpSession session, HttpServletRequest request) {
 
         User loginUser = (User) session.getAttribute("user");
         String factory = loginUser != null ? loginUser.getFactory() : null;
-        List<EmployeeFiwa> employeeList;
+        Page<EmployeeFiwa> employeePage;
 
-       if (employeeNo != null && !employeeNo.isEmpty()) {
-            // Query by Employee No
-            employeeList = employeeFiwaRepository.findByFactoryAndEmployeeNo(factory, employeeNo);
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (employeeNo != null && !employeeNo.isEmpty()) {
+            employeePage = employeeFiwaRepository.findByFactoryAndEmployeeNo(factory, employeeNo, pageable);
         } else {
-            // Jika tidak ada input, tampilkan semua data
-            employeeList = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
+            employeePage = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF", pageable);
         }
 
-        // Tambahkan atribut model yang dibutuhkan template
-        model.addAttribute("employeeList", employeeList);
+        model.addAttribute("employeePage", employeePage != null ? employeePage : Page.empty());
+        model.addAttribute("employeeList", employeePage != null ? employeePage.getContent() : new ArrayList<>());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", employeePage != null ? employeePage.getTotalPages() : 1);
+        model.addAttribute("pageSize", size);
 
         if (loginUser != null) {
             model.addAttribute("username", loginUser.getUsername());
@@ -356,6 +366,57 @@ public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectA
         model.addAttribute("ip", request.getRemoteAddr());
 
         return "dataEmployee";
+    }
+
+    @GetMapping("/export-employee-excel")
+    public void exportEmployeeExcel(HttpServletResponse response, HttpSession session) throws Exception {
+        User loginUser = (User) session.getAttribute("user");
+        String factory = loginUser != null ? loginUser.getFactory() : null;
+        List<EmployeeFiwa> allEmployees = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
+
+        // Buat workbook Excel
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Karyawan");
+
+        // Style border
+        CellStyle borderStyle = workbook.createCellStyle();
+        borderStyle.setBorderTop(BorderStyle.THIN);
+        borderStyle.setBorderBottom(BorderStyle.THIN);
+        borderStyle.setBorderLeft(BorderStyle.THIN);
+        borderStyle.setBorderRight(BorderStyle.THIN);
+
+        
+        // Header
+        Row header = sheet.createRow(0);
+        String[] headers = {"Employee No", "Nama", "Gender", "Dept Code", "Group Name", "Start Date"};
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = header.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(borderStyle);
+        }
+
+        // Data
+        int rowIdx = 1;
+        for (EmployeeFiwa emp : allEmployees) {
+            Row row = sheet.createRow(rowIdx++);
+            Cell cell0 = row.createCell(0); cell0.setCellValue(emp.getEmployeeNo()); cell0.setCellStyle(borderStyle);
+            Cell cell1 = row.createCell(1); cell1.setCellValue(emp.getName()); cell1.setCellStyle(borderStyle);
+            Cell cell2 = row.createCell(2); cell2.setCellValue(emp.getGender()); cell2.setCellStyle(borderStyle);
+            Cell cell3 = row.createCell(3); cell3.setCellValue(emp.getDeptCode()); cell3.setCellStyle(borderStyle);
+            Cell cell4 = row.createCell(4); cell4.setCellValue(emp.getGroupName()); cell4.setCellStyle(borderStyle);
+            Cell cell5 = row.createCell(5); cell5.setCellValue(emp.getStartDate()); cell5.setCellStyle(borderStyle);
+        }
+
+        // Autosize columns
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        response.setHeader("Content-Disposition", "attachment; filename=DataKaryawan_" + timestamp + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 
 }
