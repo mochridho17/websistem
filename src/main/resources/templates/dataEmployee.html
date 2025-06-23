@@ -77,6 +77,23 @@
                     <i class="bi bi-list"></i> Data Kehadiran
                 </a>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list"></i> Inventory IT
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                    <li>
+                        <a class="dropdown-item" href="/inventory-item">
+                            <i class="bi bi-box"></i> Inventory Item
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/inventory-transaction/inventoryTransactionList">
+                            <i class="bi bi-arrow-left-right"></i> Inventory Transaksi
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>
@@ -113,6 +130,7 @@
         <button type="submit" class="btn btn-dark">Query</button>
     </form>
 </div>
+    <h6 class="fw-bold mb-2">Data Karyawan</h6> 
     <div class="table-responsive mt-2">
     <table id="employeeTable" class="table table-bordered table-striped">
       <thead class="table-dark">
@@ -369,6 +387,7 @@ $(document).ready(function () {
     var table = $('#employeeTable').DataTable({
         paging: false, // <-- tambahkan ini
         info: false,
+        searching: false,
         pageLength: 10,
         // lengthMenu: [5, 10, 25, 50, 100],
         dom: 'Blfrtip',

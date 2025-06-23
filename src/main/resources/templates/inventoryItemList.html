@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${factory} + ' - ' + ${username} + ' ' + ${ip}">Inventory Items</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+       <button class="btn btn-outline-secondary me-2" id="sidebarToggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+        <a class="navbar-brand" href="/home">
+            <i class="bi bi-grid-1x2-fill me-2"></i> SIS
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <span th:text="${factory} + ' - ' + ${username}" class="profile-label"></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="showLangAlert(event)">
+                        <i class="bi bi-translate"></i> <span th:text="#{language}">Language</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        <i class="bi bi-door-closed-fill"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+<nav class="col-md-2 sidebar sidebar-animated" id="sidebarMenu">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/home">
+                    <i class="bi bi-house-door-fill"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item" th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/dataUsers">
+                    <i class="bi bi-person-add"></i> Data Users
+                </a>
+            </li>
+            <li class="nav-item " th:if="${role == 'ADMIN'}">
+                <a class="nav-link" href="/audit-log">
+                    <i class="bi bi-person-add"></i> Audit Logs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dataEmployee">
+                    <i class="bi bi-person-lines-fill"></i> Data Karyawan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dataAttendance">
+                    <i class="bi bi-list"></i> Data Kehadiran
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list"></i> Inventory IT
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                    <li>
+                        <a class="dropdown-item" href="/inventory-item">
+                            <i class="bi bi-box"></i> Inventory Items
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/inventory-transaction/inventoryTransactionList">
+                            <i class="bi bi-arrow-left-right"></i> Inventory Transaksi
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Modal Edit Inventory Item -->
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form th:action="@{/inventory-item/edit}" method="post" id="editItemForm">
+        <input type="hidden" name="id" id="editId">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editItemModalLabel">Edit Inventory Item</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Field sama seperti modal tambah, tapi pakai id edit* -->
+          <div class="mb-2">
+            <label class="form-label">Kode Barang</label>
+            <input type="text" name="kodeBarang" id="editKodeBarang" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Nama Barang</label>
+            <input type="text" name="namaBarang" id="editNamaBarang" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Kategori</label>
+            <input type="text" name="kategori" id="editKategori" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Merk</label>
+            <input type="text" name="merk" id="editMerk" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Jumlah</label>
+            <input type="text" name="jumlah" id="editJumlah" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Lokasi</label>
+            <input type="text" name="lokasi" id="editLokasi" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Status</label>
+            <select name="status" id="editStatus" class="form-select">
+              <option value="Tersedia">Tersedia</option>
+              <option value="Dipinjam">Dipinjam</option>
+              <option value="Keluar">Keluar</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Keterangan</label>
+            <textarea name="keterangan" id="editKeterangan" class="form-control"></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tanggal Masuk</label>
+            <input type="date" name="tanggalMasuk" id="editTanggalMasuk" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-dark">Simpan Perubahan</button>
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Inventory Item -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form th:action="@{/inventory-item/add}" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addItemModalLabel">Tambah Inventory Item</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label">Kode Barang</label>
+            <input type="text" name="kodeBarang" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Nama Barang</label>
+            <input type="text" name="namaBarang" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Kategori</label>
+            <input type="text" name="kategori" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Merk</label>
+            <input type="text" name="merk" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Jumlah</label>
+            <input type="text" name="jumlah" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Lokasi</label>
+            <input type="text" name="lokasi" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+              <option value="Tersedia">Tersedia</option>
+              <option value="Dipinjam">Dipinjam</option>
+              <option value="Keluar">Keluar</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Keterangan</label>
+            <textarea name="keterangan" class="form-control"></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tanggal Masuk</label>
+            <input type="date" name="tanggalMasuk" class="form-control">
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-dark">Simpan</button>
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+            <!-- ...existing code... -->
+<main class="col-md-10 ms-sm-auto px-4" id="mainContent">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div class="d-flex justify-content-between align-items-center">
+</div>
+    <div class="d-flex align-items-end flex-wrap gap-2 mb-3">
+    <button type="button" class="btn btn-dark"
+        data-bs-toggle="modal"
+        data-bs-target="#addItemModal" 
+        th:if="${canCrudInventory}">
+        <i class="bi bi-plus-square"></i>
+    </button>
+    <button type="button" id="exportExcelBtn" class="btn btn-dark">
+        <i class="bi bi-file-earmark-excel"></i> Export
+    </button>
+    <form method="post" th:action="@{/inventory-item/query}" class="d-flex align-items-end gap-2 mb-0">
+    <input type="text" name="kodeBarang" placeholder="Kode Barang" class="form-control" style="width: 150px;">
+    <button type="submit" class="btn btn-dark">Query</button>
+</form>
+</div>
+    <h6 class="fw-bold mb-2">Inventory Items</h6>
+<div class="table-responsive mt-2">
+<table id="itemTable" class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>No</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Kategori</th>
+            <th>Merk</th>
+            <th>Jumlah</th>
+            <th>Lokasi</th>
+            <th>Status</th>
+            <th>Keterangan</th>
+            <th>Tanggal Masuk</th>
+            <th>Update Terakhir</th>
+            <th style="width: 120px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="item, iterStat : ${items}">
+            <td th:text="${iterStat.count + (currentPage * pageSize)}"></td>
+            <td th:text="${item.kodeBarang}"></td>
+            <td th:text="${item.namaBarang}"></td>
+            <td th:text="${item.kategori}"></td>
+            <td th:text="${item.merk}"></td>
+            <td th:text="${item.jumlah}"></td>
+            <td th:text="${item.lokasi}"></td>
+            <td th:text="${item.status}"></td>
+            <td th:text="${item.keterangan}"></td>
+            <td th:text="${item.tanggalMasuk}"></td>
+            <td th:text="${item.tanggalUpdateFormatted}"></td>
+            <td>
+                <!-- tombol edit & hapus -->
+                <button type="button" class="btn btn-dark btn-sm btn-edit"
+                    th:data-id="${item.id}"
+                    th:data-kode-barang="${item.kodeBarang}"
+                    th:data-nama-barang="${item.namaBarang}"
+                    th:data-kategori="${item.kategori}"
+                    th:data-merk="${item.merk}"
+                    th:data-jumlah="${item.jumlah}"
+                    th:data-lokasi="${item.lokasi}"
+                    th:data-status="${item.status}"
+                    th:data-keterangan="${item.keterangan}"
+                    th:data-tanggal-masuk="${item.tanggalMasuk}"
+                    th:data-tanggal-update="${item.tanggalUpdate}">
+                    Edit
+                </button>
+                <form th:action="@{'/inventory-item/delete/' + ${item.id}}" method="post" class="d-inline-block">
+                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus barang ini?')">Hapus</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+ <div class="d-flex justify-content-between align-items-center mt-2">
+    <div>
+        <span>
+            Showing
+            <span th:text="${items != null && items.size() > 0 ? (currentPage?:0) * (pageSize?:10) + 1 : 0}"></span>
+            to
+            <span th:text="${items != null ? (currentPage?:0) * (pageSize?:10) + items.size() : 0}"></span>
+            of
+            <span th:text="${itemPage != null ? itemPage.totalElements : 0}"></span>
+            entries
+        </span>
+    </div>
+    <div class="pagination mb-0" th:if="${totalPages > 1}">
+        <form method="post" th:action="@{/inventory-item/query}" id="paginationForm" class="d-inline">
+            <input type="hidden" name="kodeBarang" th:value="${param.kodeBarang}" />
+            <input type="hidden" name="size" th:value="${pageSize}" />
+            <ul class="pagination mb-0">
+                <li th:classappend="${(currentPage?:0) == 0} ? 'disabled'">
+                    <button class="page-link" type="submit" name="page"
+                            th:value="${(currentPage?:0) - 1}"
+                            th:disabled="${(currentPage?:0) == 0}">Previous</button>
+                </li>
+                <li th:each="i : ${#numbers.sequence(
+                        (totalPages?:1) <= 5 ? 0 : 
+                            ((currentPage?:0) <= 2 ? 0 : 
+                                ((currentPage?:0) >= (totalPages?:1)-3 ? (totalPages?:1)-5 : (currentPage?:0)-2)
+                            ),
+                        (totalPages?:1) <= 5 ? (totalPages?:1)-1 : 
+                            ((currentPage?:0) <= 2 ? 4 : 
+                                ((currentPage?:0) >= (totalPages?:1)-3 ? (totalPages?:1)-1 : (currentPage?:0)+2)
+                            )
+                    )}"
+                    th:classappend="${i == (currentPage?:0)} ? 'active'">
+                    <button class="page-link" type="submit" name="page" th:value="${i}" th:text="${i+1}"></button>
+                </li>
+                <li th:classappend="${(currentPage?:0) == (totalPages?:1)-1} ? 'disabled'">
+                    <button class="page-link" type="submit" name="page"
+                            th:value="${(currentPage?:0) + 1}"
+                            th:disabled="${(currentPage?:0) == (totalPages?:1)-1}">Next</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+        </div>
+    </div>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+$(document).ready(function () {
+    var today = new Date();
+    var tanggal = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    var fileName = 'InventoryItem_' + tanggal;
+
+    var table = $('#itemTable').DataTable({
+        paging: false,
+        info: false,
+        searching: false,
+        pageLength: 10,
+        dom: 'Blfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="bi bi-file-earmark-excel"></i> Export Excel',
+                title: 'Inventory Item',
+                filename: fileName,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                    modifier: { page: 'all' }
+                },
+                className: 'd-none'
+            }
+        ],
+        language: {
+            emptyTable: "Tidak ada data inventory"
+        }
+    });
+
+    $('#exportExcelBtn').on('click', function() {
+        if (confirm('Yakin export semua data inventory ke Excel?')) {
+            window.location.href = '/inventory-item/export-excel';
+        }
+    });
+
+    $('#itemTable').on('click', '.btn-edit', function () {
+    $('#editId').val($(this).data('id'));
+    $('#editKodeBarang').val($(this).data('kode-barang'));
+    $('#editNamaBarang').val($(this).data('nama-barang'));
+    $('#editKategori').val($(this).data('kategori'));
+    $('#editMerk').val($(this).data('merk'));
+    $('#editJumlah').val($(this).data('jumlah'));
+    $('#editLokasi').val($(this).data('lokasi'));
+    $('#editStatus').val($(this).data('status'));
+    $('#editKeterangan').val($(this).data('keterangan'));
+    $('#editTanggalMasuk').val($(this).data('tanggal-masuk'));
+    var modal = new bootstrap.Modal(document.getElementById('editItemModal'));
+    modal.show();
+});
+});
+</script>
+    <script>
+        function showLangAlert(event) {
+            event.preventDefault();
+            alert('Sedang dalam pengembangan.');
+        }
+    </script>
+    <script>
+        // Toggle sidebar dan simpan state ke localStorage
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            var sidebar = document.getElementById('sidebarMenu');
+            var main = document.getElementById('mainContent');
+            sidebar.classList.toggle('d-none');
+            if (sidebar.classList.contains('d-none')) {
+                main.classList.remove('col-md-10');
+                main.classList.add('col-md-12');
+                localStorage.setItem('sidebarHidden', 'true');
+            } else {
+                main.classList.remove('col-md-12');
+                main.classList.add('col-md-10');
+                localStorage.setItem('sidebarHidden', 'false');
+            }
+        });
+
+        // Saat halaman dimuat, cek state sidebar di localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('sidebarMenu');
+            var main = document.getElementById('mainContent');
+            if (localStorage.getItem('sidebarHidden') === 'true') {
+                sidebar.classList.add('d-none');
+                main.classList.remove('col-md-10');
+                main.classList.add('col-md-12');
+            }
+        });
+</script>
+</body>
+</html>

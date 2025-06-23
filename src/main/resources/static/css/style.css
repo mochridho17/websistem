@@ -100,14 +100,28 @@ main {
     color: #fff;
 }
 
-/* Sidebar */
+
+
+/* Main content juga stretch */
+main#mainContent {
+    flex: 1 1 auto;
+    min-height: 100vh;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar akan otomatis setinggi konten utama */
 .sidebar {
-    height: 93vh;
+    height: auto !important;
+    min-height: 100vh;
     background: #222222;
     border-right: 2px solid #444444;
-    min-height: 92vh;
     padding-top: 2rem;
     box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
 }
 .sidebar .nav-link {
     color: #bbb;
@@ -192,4 +206,27 @@ body {
     letter-spacing: 1px;
     pointer-events: none;
     user-select: none;
+}
+
+/* Pagination: hitam putih */
+.pagination .page-link {
+    color: #222;
+    background-color: #fff;
+    border: 1px solid #222;
+}
+.pagination .page-link:hover,
+.pagination .page-link:focus {
+    color: #fff;
+    background-color: #222;
+    border-color: #222;
+}
+.pagination .active .page-link {
+    color: #fff;
+    background-color: #222;
+    border-color: #222;
+}
+.pagination .disabled .page-link {
+    color: #aaa;
+    background-color: #fff;
+    border-color: #ddd;
 }

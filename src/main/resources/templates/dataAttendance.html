@@ -77,6 +77,23 @@
                     <i class="bi bi-list"></i> Data Kehadiran
                 </a>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list"></i> Inventory IT
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                    <li>
+                        <a class="dropdown-item" href="/inventory-item">
+                            <i class="bi bi-box"></i> Inventory Item
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="/inventory-transaction/inventoryTransactionList">
+                            <i class="bi bi-arrow-left-right"></i> Inventory Transaksi
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>
@@ -89,7 +106,7 @@
         <!-- <h2>Data Kehadiran</h2> -->
         <!-- Tombol Download yang memunculkan modal -->
     </div>
-    <form method="get" action="/dataAttendance" class="row g-3 mb-3">
+    <form method="get" action="/dataAttendance" class="row g-2 mb-3">
     <div class="col-auto">
         <input type="date" class="form-control" name="startDate" required>
     </div>
@@ -106,9 +123,10 @@
         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#downloadModal">
     Download Data Kehadiran
     </button>
-    </div>
-    
+    </div> 
+    </form>
 </form>
+    <h6 class="fw-bold mb-2">Data Kehadiran</h6>
     <div class="table-responsive">
     <table class="table table-bordered">
     <thead class="table-dark">

@@ -44,28 +44,28 @@ public class EmployeeController {
     private AuditLogRepository auditLogRepository;
 
     @GetMapping("/dataEmployee")
-public String dataEmployee(Model model, HttpSession session, HttpServletRequest request) {
-    User loginUser = (User) session.getAttribute("user");
-    String factory = loginUser != null ? loginUser.getFactory() : null;
-    List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
-    model.addAttribute("employeeList", new ArrayList<>()); // kosong saat awal
-    
+    public String dataEmployee(Model model, HttpSession session, HttpServletRequest request) {
+        User loginUser = (User) session.getAttribute("user");
+        String factory = loginUser != null ? loginUser.getFactory() : null;
+        List<EmployeeFiwa> employeeList = employeeFiwaRepository.findAllByFactoryAndStatus(factory, "AKTIF");
+        model.addAttribute("employeeList", new ArrayList<>()); // kosong saat awal
+        
 
-    if (loginUser != null) {
-        model.addAttribute("username", loginUser.getUsername());
-        model.addAttribute("factory", loginUser.getFactory());
-        model.addAttribute("role", loginUser.getRole());
+        if (loginUser != null) {
+            model.addAttribute("username", loginUser.getUsername());
+            model.addAttribute("factory", loginUser.getFactory());
+            model.addAttribute("role", loginUser.getRole());
 
-        // Enable CRUD jika authority TIDAK null dan TIDAK kosong
-        boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
-        model.addAttribute("canCrudEmployee", canCrudEmployee);
+            // Enable CRUD jika authority TIDAK null dan TIDAK kosong
+            boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
+            model.addAttribute("canCrudEmployee", canCrudEmployee);
+        }
+        model.addAttribute("employeeFiwa", new EmployeeFiwa());
+        model.addAttribute("ip", request.getRemoteAddr());
+
+        System.out.println("Jumlah data employee: " + employeeList.size()); // Debug
+        return "dataEmployee";
     }
-    model.addAttribute("employeeFiwa", new EmployeeFiwa());
-    model.addAttribute("ip", request.getRemoteAddr());
-
-    System.out.println("Jumlah data employee: " + employeeList.size()); // Debug
-    return "dataEmployee";
-}
 
     @PostMapping("/upload-employee")
     @Transactional
