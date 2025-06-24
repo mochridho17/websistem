@@ -18,16 +18,19 @@ public class InventoryTransaction {
     @JoinColumn(name = "borrower_id")
     private Borrower borrower;
 
+   
     private LocalDateTime tanggalTransaksi;
     private String jenisTransaksi; // Masuk, Keluar, Pinjam, Kembali
     private Integer jumlah;
-    private String userPenerima;
     private String statusKeluar; // Pinjam, Keluar
     private LocalDate tanggalKembali;
     private String keterangan;
-    private String admin;
+    private String updateBy;
 
 
+    
+   
+    
     public Long getId() {
         return id;
     }
@@ -53,12 +56,6 @@ public class InventoryTransaction {
     public void setJumlah(Integer jumlah) {
         this.jumlah = jumlah;
     }
-    public String getUserPenerima() {
-        return userPenerima;
-    }
-    public void setUserPenerima(String userPenerima) {
-        this.userPenerima = userPenerima;
-    }
     public String getStatusKeluar() {
         return statusKeluar;
     }
@@ -77,11 +74,26 @@ public class InventoryTransaction {
     public void setKeterangan(String keterangan) {
         this.keterangan = keterangan;
     }
-    public String getAdmin() {
-        return admin;
+
+    public InventoryItem getBarang() {
+        return barang;
     }
-    public void setAdmin(String admin) {
-        this.admin = admin;
+    public void setBarang(InventoryItem barang) {
+        this.barang = barang;
+    }
+
+     public Borrower getBorrower() {
+        return borrower;
+    }
+    public void setBorrower(Borrower borrower) {
+        this.borrower = borrower;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
     // getter & setter

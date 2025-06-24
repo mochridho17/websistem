@@ -83,6 +83,11 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                     <li>
+                        <a class="dropdown-item" href="/borrower">
+                            <i class="bi bi-box"></i> Data Peminjam
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="/inventory-item">
                             <i class="bi bi-box"></i> Inventory Item
                         </a>
@@ -142,7 +147,7 @@
           <th>Dept Code</th>
           <th>Group Name</th>
           <th>Start Date</th>
-          <th style="width: 120px;">Action</th>
+          <th style="width: 55px;">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -165,10 +170,11 @@
                 th:data-start-date="${employee_fiwa.startDate}"
                 th:attr="disabled=${!canCrudEmployee}"
                 onclick="return showCrudAlertIfDisabled(this)">
-                Edit
+                <i class="bi bi-pencil-square"></i>
             </button>
             <form th:action="@{'/delete-employee/' + ${employee_fiwa.id}}" method="post" class="d-inline-block">
-              <button th:attr="disabled=${!canCrudEmployee}" type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus karyawan ini?')">Hapus</button>
+              <button th:attr="disabled=${!canCrudEmployee}" type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus karyawan ini?')">
+                <i class="bi bi-x-square"></i></button>
             </form>
           </td>
         </tr>

@@ -12,8 +12,15 @@ public class Borrower {
     private String nama;
     private String departemen;
     private String kontak;
+    private String faktory; // Tambahkan atribut faktory
 
     
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getEmployee_no() {
         return employee_no;
     }
@@ -39,5 +46,10 @@ public class Borrower {
         this.kontak = kontak;
     }
 
-    // getter & setter
+    public String getFaktory() {
+        return faktory;
+    }
+    public void setFaktory(String faktory) {
+        this.faktory = faktory;
+    }
 }

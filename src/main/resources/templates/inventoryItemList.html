@@ -83,6 +83,11 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                     <li>
+                        <a class="dropdown-item" href="/borrower">
+                            <i class="bi bi-box"></i> Data Peminjam
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="/inventory-item">
                             <i class="bi bi-box"></i> Inventory Items
                         </a>
@@ -229,7 +234,7 @@
     <button type="button" class="btn btn-dark"
         data-bs-toggle="modal"
         data-bs-target="#addItemModal" 
-        th:if="${canCrudInventory}">
+        th:attr="disabled=${!canCrudEmployee}">
         <i class="bi bi-plus-square"></i>
     </button>
     <button type="button" id="exportExcelBtn" class="btn btn-dark">
@@ -256,7 +261,7 @@
             <th>Keterangan</th>
             <th>Tanggal Masuk</th>
             <th>Update Terakhir</th>
-            <th style="width: 120px;">Action</th>
+            <th style="width: 55px;">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -275,6 +280,7 @@
             <td>
                 <!-- tombol edit & hapus -->
                 <button type="button" class="btn btn-dark btn-sm btn-edit"
+                    th:attr="disabled=${!canCrudEmployee}"
                     th:data-id="${item.id}"
                     th:data-kode-barang="${item.kodeBarang}"
                     th:data-nama-barang="${item.namaBarang}"
@@ -286,10 +292,12 @@
                     th:data-keterangan="${item.keterangan}"
                     th:data-tanggal-masuk="${item.tanggalMasuk}"
                     th:data-tanggal-update="${item.tanggalUpdate}">
-                    Edit
+                    <i class="bi bi-pencil-square"></i>
                 </button>
                 <form th:action="@{'/inventory-item/delete/' + ${item.id}}" method="post" class="d-inline-block">
-                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus barang ini?')">Hapus</button>
+                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus barang ini?')"
+                    th:attr="disabled=${!canCrudEmployee}">
+                        <i class="bi bi-x-square"></i></button>
                 </form>
             </td>
         </tr>

@@ -81,6 +81,11 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                     <li>
+                        <a class="dropdown-item" href="/borrower">
+                            <i class="bi bi-box"></i> Data Peminjam
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="/inventory-item">
                             <i class="bi bi-box"></i> Inventory Item
                         </a>
@@ -128,7 +133,7 @@
                             <th>Created Person</th>
                             <th>Role</th>
                             <th>Authority</th>
-                            <th>Action</th>
+                            <th style="width: 55px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -151,11 +156,12 @@
                                         th:data-factory="${user.factory}"
                                         th:data-createdperson="${user.createdPerson}"
                                         th:data-authority="${user.authority}">
-                                    Edit
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <!-- Tombol Hapus -->
                                <form th:action="@{'/delete-user/' + ${user.id}}" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
+                                    <button type="submit" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus user ini?')">
+                                        <i class="bi bi-x-square"></i></button>
                                </form>
                             </td>
                             </tr>

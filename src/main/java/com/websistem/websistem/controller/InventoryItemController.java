@@ -55,6 +55,15 @@ public class InventoryItemController {
         String role = loginUser != null ? loginUser.getRole() : null;
         boolean canCrudInventory = loginUser != null && "ADMIN".equalsIgnoreCase(loginUser.getRole());
 
+        if (loginUser != null) {
+                model.addAttribute("username", loginUser.getUsername());
+                model.addAttribute("factory", loginUser.getFactory());
+                model.addAttribute("role", loginUser.getRole());
+
+                boolean canCrudEmployee = "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
+                model.addAttribute("canCrudEmployee", canCrudEmployee);
+            }
+
         // Jangan ambil data apapun di sini!
         model.addAttribute("items", null); // atau Collections.emptyList()
         model.addAttribute("itemPage", null);
@@ -116,6 +125,10 @@ public class InventoryItemController {
         String username = loginUser != null ? loginUser.getUsername() : null;
         String role = loginUser != null ? loginUser.getRole() : null;
         boolean canCrudInventory = loginUser != null && "ADMIN".equalsIgnoreCase(loginUser.getRole());
+
+        // TAMBAHKAN INI:
+        boolean canCrudEmployee = loginUser != null && "CRUD_EMPLOYEE".equals(loginUser.getAuthority());
+        model.addAttribute("canCrudEmployee", canCrudEmployee);
 
         Pageable pageable = PageRequest.of(page, size);
         Page<InventoryItem> itemPage;

@@ -83,6 +83,11 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                     <li>
+                        <a class="dropdown-item" href="/borrower">
+                            <i class="bi bi-box"></i> Data Peminjam
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="/inventory-item">
                             <i class="bi bi-box"></i> Inventory Item
                         </a>
@@ -106,14 +111,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <!-- Sesuaikan field dengan entity -->
+        <!-- Barang (relasi) -->
         <div class="mb-3">
           <label class="form-label">Barang</label>
-          <input type="text" name="barang" class="form-control" required>
+          <select name="barangId" class="form-control" required>
+            <option value="">Pilih Barang</option>
+            <option th:each="item : ${items}" th:value="${item.id}" th:text="${item.namaBarang}"></option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">Jenis Transaksi</label>
-          <select name="jenisTransaksi" class="form-control" required>
+          <select id="jenisTransaksi" name="jenisTransaksi" class="form-control" required>
             <option value="Masuk">Masuk</option>
             <option value="Keluar">Keluar</option>
             <option value="Pinjam">Pinjam</option>
@@ -124,13 +132,13 @@
           <label class="form-label">Jumlah</label>
           <input type="number" name="jumlah" class="form-control" required>
         </div>
+        <!-- Peminjam (relasi) -->
         <div class="mb-3">
           <label class="form-label">Peminjam</label>
-          <input type="text" name="borrower" class="form-control">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">User Penerima</label>
-          <input type="text" name="userPenerima" class="form-control">
+          <select name="borrowerId" class="form-control">
+            <option value="">-</option>
+            <option th:each="b : ${borrowers}" th:value="${b.id}" th:text="${b.nama}"></option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">Tanggal Transaksi</label>
@@ -146,7 +154,7 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Tanggal Kembali</label>
-          <input type="date" name="tanggalKembali" class="form-control">
+          <input type="date" id="tanggalKembali" name="tanggalKembali" class="form-control">
         </div>
         <div class="mb-3">
           <label class="form-label">Keterangan</label>
@@ -171,14 +179,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <!-- Field sama seperti modal tambah, tapi id="edit..." -->
         <div class="mb-3">
           <label class="form-label">Barang</label>
-          <input type="text" id="editBarang" name="barang" class="form-control" required>
+          <select id="editBarangId" name="barangId" class="form-control" required>
+            <option value="">Pilih Barang</option>
+            <option th:each="item : ${items}" th:value="${item.id}" th:text="${item.namaBarang}"></option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">Jenis Transaksi</label>
-          <select id="editJenisTransaksi" name="jenisTransaksi" class="form-control" required>
+          <select id="jenisTransaksi" name="jenisTransaksi" class="form-control" required>
             <option value="Masuk">Masuk</option>
             <option value="Keluar">Keluar</option>
             <option value="Pinjam">Pinjam</option>
@@ -191,11 +201,10 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Peminjam</label>
-          <input type="text" id="editBorrower" name="borrower" class="form-control">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">User Penerima</label>
-          <input type="text" id="editUserPenerima" name="userPenerima" class="form-control">
+          <select id="editBorrowerId" name="borrowerId" class="form-control">
+            <option value="">-</option>
+            <option th:each="b : ${borrowers}" th:value="${b.id}" th:text="${b.nama}"></option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">Tanggal Transaksi</label>
@@ -211,7 +220,7 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Tanggal Kembali</label>
-          <input type="date" id="editTanggalKembali" name="tanggalKembali" class="form-control">
+          <input type="date" id="tanggalKembali" name="tanggalKembali" class="form-control">
         </div>
         <div class="mb-3">
           <label class="form-label">Keterangan</label>
@@ -235,16 +244,16 @@
     <button type="button" class="btn btn-dark"
         data-bs-toggle="modal"
         data-bs-target="#addTrxModal" 
-        th:if="${canCrudInventory}">
+        th:attr="disabled=${!canCrudEmployee}">
         <i class="bi bi-plus-square"></i>
     </button>
     <button type="button" id="exportExcelBtn" class="btn btn-dark">
         <i class="bi bi-file-earmark-excel"></i> Export
     </button>
-    <form method="post" th:action="@{/inventory-item/query}" class="d-flex align-items-end gap-2 mb-0">
-    <input type="text" name="kodeBarang" placeholder="Kode Barang" class="form-control" style="width: 150px;">
-    <button type="submit" class="btn btn-dark">Query</button>
-</form>
+    <form method="post" th:action="@{/inventory-transaction/query}" class="d-flex align-items-end gap-2 mb-0">
+        <input type="text" name="kodeBarang" placeholder="Kode Barang" class="form-control" style="width: 150px;">
+        <button type="submit" class="btn btn-dark">Query</button>
+    </form>
 </div>
     <h6 class="fw-bold mb-2">Inventory Transactions</h6>
     <div class="table-responsive mt-2">
@@ -256,18 +265,17 @@
                     <th>Jenis Transaksi</th>
                     <th>Jumlah</th>
                     <th>Peminjam</th>
-                    <th>User Penerima</th>
                     <th>Tanggal Transaksi</th>
                     <th>Status Keluar</th>
                     <th>Tanggal Kembali</th>
                     <th>Keterangan</th>
-                    <th>Admin</th>
+                    <th>Update by</th>
                     <th style="width: 100px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${transactions == null or transactions.size() == 0}">
-                    <td colspan="12" class="text-center text-muted">Tidak ada data transaksi</td>
+                    <td colspan="12" class="text-center">Tidak ada data transaksi</td>
                 </tr>
                 <tr th:each="trx, iterStat : ${transactions}" th:unless="${transactions == null or transactions.size() == 0}">
                     <td th:text="${iterStat.count + (currentPage?:0) * (pageSize?:10)}"></td>
@@ -275,14 +283,34 @@
                     <td th:text="${trx.jenisTransaksi}"></td>
                     <td th:text="${trx.jumlah}"></td>
                     <td th:text="${trx.borrower != null ? trx.borrower.nama : '-'}"></td>
-                    <td th:text="${trx.userPenerima}"></td>
                     <td th:text="${trx.tanggalTransaksi != null ? #temporals.format(trx.tanggalTransaksi, 'yyyy-MM-dd HH:mm') : ''}"></td>
                     <td th:text="${trx.statusKeluar}"></td>
                     <td th:text="${trx.tanggalKembali != null ? trx.tanggalKembali : ''}"></td>
                     <td th:text="${trx.keterangan}"></td>
-                    <td th:text="${trx.admin}"></td>
+                    <td th:text="${trx.updateBy}"></td>
                     <td>
-                        <a th:href="@{'/inventory-transaction/delete/' + ${trx.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Hapus transaksi?')">Hapus</a>
+                        <!-- Tombol Edit -->
+                        <button type="button" class="btn btn-dark btn-sm btn-edit"
+                            th:attr="disabled=${!canCrudEmployee}"
+                            th:data-id="${trx.id}"
+                            th:data-barang-id="${trx.barang != null ? trx.barang.id : ''}"
+                            th:data-barang-nama="${trx.barang != null ? trx.barang.namaBarang : ''}"
+                            th:data-jenis-transaksi="${trx.jenisTransaksi}"
+                            th:data-jumlah="${trx.jumlah}"
+                            th:data-borrower-id="${trx.borrower != null ? trx.borrower.id : ''}"
+                            th:data-borrower-nama="${trx.borrower != null ? trx.borrower.nama : ''}"
+                            th:data-tanggal-transaksi="${trx.tanggalTransaksi != null ? #temporals.format(trx.tanggalTransaksi, 'yyyy-MM-dd''T''HH:mm') : ''}"
+                            th:data-status-keluar="${trx.statusKeluar}"
+                            th:data-tanggal-kembali="${trx.tanggalKembali != null ? trx.tanggalKembali : ''}"
+                            th:data-keterangan="${trx.keterangan}">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <!-- Tombol Hapus -->
+                        <form th:action="@{/inventory-transaction/delete/{id}(id=${trx.id})}" method="post" class="d-inline-block">
+                            <button type="submit" th:attr="disabled=${!canCrudEmployee}" class="btn btn-dark btn-sm" onclick="return confirm('Yakin hapus transaksi ini?')">
+                               <i class="bi bi-x-square"></i>
+                            </button>   
+                        </form>
                     </td>
                 </tr>
             </tbody>
@@ -376,20 +404,19 @@ $(document).ready(function () {
         }
     });
 
-    $('#itemTable').on('click', '.btn-edit', function () {
-    $('#editId').val($(this).data('id'));
-    $('#editKodeBarang').val($(this).data('kode-barang'));
-    $('#editNamaBarang').val($(this).data('nama-barang'));
-    $('#editKategori').val($(this).data('kategori'));
-    $('#editMerk').val($(this).data('merk'));
-    $('#editJumlah').val($(this).data('jumlah'));
-    $('#editLokasi').val($(this).data('lokasi'));
-    $('#editStatus').val($(this).data('status'));
-    $('#editKeterangan').val($(this).data('keterangan'));
-    $('#editTanggalMasuk').val($(this).data('tanggal-masuk'));
-    var modal = new bootstrap.Modal(document.getElementById('editItemModal'));
-    modal.show();
-});
+    $('#trxTable').on('click', '.btn-edit', function () {
+        $('#editId').val($(this).data('id'));
+        $('#editBarangId').val($(this).data('barang-id'));
+        $('#editJenisTransaksi').val($(this).data('jenis-transaksi'));
+        $('#editJumlah').val($(this).data('jumlah'));
+        $('#editBorrowerId').val($(this).data('borrower-id'));
+        $('#editTanggalTransaksi').val($(this).data('tanggal-transaksi'));
+        $('#editStatusKeluar').val($(this).data('status-keluar'));
+        $('#editTanggalKembali').val($(this).data('tanggal-kembali'));
+        $('#editKeterangan').val($(this).data('keterangan'));
+        var modal = new bootstrap.Modal(document.getElementById('editTrxModal'));
+        modal.show();
+    });
 });
 </script>
     <script>
@@ -425,6 +452,32 @@ $(document).ready(function () {
                 main.classList.add('col-md-12');
             }
         });
+</script>
+<!-- Tambahkan pada bagian <head> atau sebelum </body> -->
+<script>
+    function toggleTanggalKembali(selectorJenis, selectorTanggal) {
+        const jenisTransaksi = document.querySelector(selectorJenis);
+        const tanggalKembali = document.querySelector(selectorTanggal);
+
+        function updateTanggalKembali() {
+            if (jenisTransaksi.value === "Keluar") {
+                tanggalKembali.disabled = true;
+                tanggalKembali.required = false;
+                tanggalKembali.value = "";
+            } else {
+                tanggalKembali.disabled = false;
+                tanggalKembali.required = false; // Atur true jika hanya "Pinjam" yang wajib
+            }
+        }
+
+        jenisTransaksi.addEventListener('change', updateTanggalKembali);
+        updateTanggalKembali();
+    }
+
+    // Untuk modal tambah
+    toggleTanggalKembali('#jenisTransaksi', '#tanggalKembali');
+    // Untuk modal edit
+    toggleTanggalKembali('#editJenisTransaksi', '#editTanggalKembali');
 </script>
 </body>
 </html>
