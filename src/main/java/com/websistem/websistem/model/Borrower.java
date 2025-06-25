@@ -8,7 +8,8 @@ public class Borrower {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String employee_no;
+    @Column(name = "employeeno")
+    private String employeeNo;
     private String nama;
     private String departemen;
     private String kontak;
@@ -21,11 +22,11 @@ public class Borrower {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getEmployee_no() {
-        return employee_no;
+    public String getEmployeeNo() {
+        return employeeNo;
     }
-    public void setEmployee_no(String employee_no) {
-        this.employee_no = employee_no;
+    public void setEmployeeNo(String employeeNo) {
+        this.employeeNo = employeeNo;
     }
     public String getNama() {
         return nama;

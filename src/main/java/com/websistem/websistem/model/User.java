@@ -32,6 +32,9 @@ public class User {
 
     private String authority;
 
+    private int failedLoginAttempts = 0;
+    private boolean accountLocked = false;
+
 
 
     // --- Constructor ---
@@ -103,4 +106,10 @@ public class User {
     public void setAuthority(String authority) {
         this.authority = authority;
     }
+
+    public int getFailedLoginAttempts() { return failedLoginAttempts; }
+    public void setFailedLoginAttempts(int failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
+
+    public boolean isAccountLocked() { return accountLocked; }
+    public void setAccountLocked(boolean accountLocked) { this.accountLocked = accountLocked; }
 }

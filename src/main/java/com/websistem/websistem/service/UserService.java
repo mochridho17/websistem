@@ -19,5 +19,24 @@ public class UserService {
         } else {
             return null; // Tidak ditemukan
         }
+        
     }
+
+    public User findByUsernameAndFactory(String username, String factory) {
+        List<User> users = userRepository.findByUsernameAndFactory(username, factory);
+        if (!users.isEmpty()) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+    
 }

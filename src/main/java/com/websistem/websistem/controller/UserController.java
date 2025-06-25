@@ -85,84 +85,91 @@ public class UserController {
     }
 
     @PostMapping("/add-user")
-public String addUser(@ModelAttribute User user, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    // Cek duplikasi username di factory yang sama
-    List<User> existingUsers = userRepository.findByUsernameAndFactory(user.getUsername(), user.getFactory());
-    if (!existingUsers.isEmpty()) {
-        redirectAttributes.addFlashAttribute("error", "User dengan username dan factory yang sama sudah ada!");
-        return "redirect:/dataUsers";
-    }
+    public String addUser(@ModelAttribute User user, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        // Cek duplikasi username di factory yang sama
+        String username = user.getUsername().toUpperCase();
+        if (!username.matches("[A-Z0-9.-]+")) {
+            redirectAttributes.addFlashAttribute("error", "Username hanya boleh huruf, angka, titik (.) atau strip (-) dan tanpa spasi!");
+            return "redirect:/dataUsers";
+        }
+        user.setUsername(username);
+        user.setUsername(user.getUsername().toUpperCase()); // UPPERCASE
+        List<User> existingUsers = userRepository.findByUsernameAndFactory(user.getUsername(), user.getFactory());
+        if (!existingUsers.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "User dengan username dan factory yang sama sudah ada!");
+            return "redirect:/dataUsers";
+        }
 
-    userRepository.save(user);
+        userRepository.save(user);
 
-    User loginUser = (User) session.getAttribute("user");
-    AuditLog log = new AuditLog();
-    log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
-    log.setIp(request.getRemoteAddr());
-    log.setAction("ADD_USER");
-    log.setEntityName("User");
-    log.setEntityId(String.valueOf(user.getId()));
-    log.setDescription("Tambah user: " + user.getUsername());
-    log.setTimestamp(LocalDateTime.now());
-    auditLogRepository.save(log);
-
-    redirectAttributes.addFlashAttribute("success", "User berhasil ditambah!");
-    return "redirect:/dataUsers";
-}
-
-    @PostMapping("/edit-user")
-public String editUser(@ModelAttribute User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    User existing = userRepository.findById(user.getId()).orElse(null);
-    if (existing != null) {
-        existing.setUsername(user.getUsername());
-        existing.setPassword(user.getPassword());
-        existing.setFactory(user.getFactory());
-        existing.setAuthority(user.getAuthority()); // <-- Tambahkan baris ini!
-        // createdPerson tidak diubah
-        userRepository.save(existing);
-
-        // Audit log ...
         User loginUser = (User) session.getAttribute("user");
         AuditLog log = new AuditLog();
-        log.setIp(request.getRemoteAddr());
         log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
-        log.setAction("EDIT_USER");
+        log.setIp(request.getRemoteAddr());
+        log.setAction("ADD_USER");
         log.setEntityName("User");
         log.setEntityId(String.valueOf(user.getId()));
-        log.setDescription("Edit user: " + user.getUsername());
+        log.setDescription("Tambah user: " + user.getUsername());
         log.setTimestamp(LocalDateTime.now());
         auditLogRepository.save(log);
 
-        redirectAttributes.addFlashAttribute("success", "User berhasil diupdate!");
-    } else {
-        redirectAttributes.addFlashAttribute("error", "User tidak ditemukan!");
+        redirectAttributes.addFlashAttribute("success", "User berhasil ditambah!");
+        return "redirect:/dataUsers";
     }
-    return "redirect:/dataUsers";
-}
 
-    @PostMapping("/delete-user/{id}")
-public String deleteUser(@PathVariable Long id, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            userRepository.delete(user);
+    @PostMapping("/edit-user")
+    public String editUser(@ModelAttribute User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User existing = userRepository.findById(user.getId()).orElse(null);
+        if (existing != null) {
+            existing.setUsername(user.getUsername());
+            existing.setPassword(user.getPassword());
+            existing.setFactory(user.getFactory());
+            existing.setAuthority(user.getAuthority()); // <-- Tambahkan baris ini!
+            // createdPerson tidak diubah
+            userRepository.save(existing);
 
+            // Audit log ...
             User loginUser = (User) session.getAttribute("user");
             AuditLog log = new AuditLog();
-            log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
             log.setIp(request.getRemoteAddr());
-            log.setAction("DELETE_USER");
+            log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+            log.setAction("EDIT_USER");
             log.setEntityName("User");
             log.setEntityId(String.valueOf(user.getId()));
-            log.setDescription("Hapus user: " + user.getUsername());
+            log.setDescription("Edit user: " + user.getUsername());
             log.setTimestamp(LocalDateTime.now());
             auditLogRepository.save(log);
 
-            redirectAttributes.addFlashAttribute("success", "User berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("success", "User berhasil diupdate!");
         } else {
             redirectAttributes.addFlashAttribute("error", "User tidak ditemukan!");
         }
         return "redirect:/dataUsers";
     }
+
+    @PostMapping("/delete-user/{id}")
+    public String deleteUser(@PathVariable Long id, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                userRepository.delete(user);
+
+                User loginUser = (User) session.getAttribute("user");
+                AuditLog log = new AuditLog();
+                log.setUsername(loginUser != null ? loginUser.getUsername() : "unknown");
+                log.setIp(request.getRemoteAddr());
+                log.setAction("DELETE_USER");
+                log.setEntityName("User");
+                log.setEntityId(String.valueOf(user.getId()));
+                log.setDescription("Hapus user: " + user.getUsername());
+                log.setTimestamp(LocalDateTime.now());
+                auditLogRepository.save(log);
+
+                redirectAttributes.addFlashAttribute("success", "User berhasil dihapus!");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "User tidak ditemukan!");
+            }
+            return "redirect:/dataUsers";
+        }
 
     @GetMapping("/delete-user/{id}")
     public String redirectDeleteUser() {

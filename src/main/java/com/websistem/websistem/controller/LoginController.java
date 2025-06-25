@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,14 +29,14 @@ public class LoginController {
     }
 
    @GetMapping("/")
-public String showLoginForm(HttpSession session, Model model, HttpServletRequest request) {
-    if (session.getAttribute("user") != null) {
-        return "redirect:/home";
+    public String showLoginForm(HttpSession session, Model model, HttpServletRequest request) {
+        if (session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
+        String ip = request.getRemoteAddr();
+        model.addAttribute("ip", ip);
+        return "index";
     }
-    String ip = request.getRemoteAddr();
-    model.addAttribute("ip", ip);
-    return "index";
-}
 
     @GetMapping("/login")
     public String redirectLoginToIndex() {
@@ -49,22 +50,52 @@ public String showLoginForm(HttpSession session, Model model, HttpServletRequest
                         Model model,
                         HttpSession session,
                         HttpServletRequest request) {
-        User user = userService.login(username, password, factory);
+        // Validasi: hanya huruf besar, angka, titik, strip, tanpa spasi
+        if (!username.matches("[A-Z0-9.-]+")) {
+            model.addAttribute("error", "Username harus huruf besar semua, boleh angka, titik (.) atau strip (-), tanpa spasi!");
+            return "index";
+        }
+
+        User user = userService.findByUsernameAndFactory(username, factory);
         if (user != null) {
-            session.setAttribute("user", user);
+            if (user.isAccountLocked()) {
+                model.addAttribute("error", "Akun Anda diblokir karena 5x gagal login. Hubungi IT untuk membuka blokir.");
+                return "index";
+            }
+            User loginUser = userService.login(username, password, factory);
+            if (loginUser != null) {
+                // Reset counter gagal login
+                user.setFailedLoginAttempts(0);
+                userService.save(user);
 
-            // Audit log login
-            AuditLog log = new AuditLog();
-            log.setUsername(user.getUsername());
-            log.setIp(request.getRemoteAddr());
-            log.setAction("LOGIN");
-            log.setEntityName("User");
-            log.setEntityId(String.valueOf(user.getId()));
-            log.setDescription("Login user: " + user.getUsername());
-            log.setTimestamp(LocalDateTime.now());
-            auditLogRepository.save(log);
+                session.setAttribute("user", loginUser);
 
-            return "redirect:/home";
+                // Audit log login
+                AuditLog log = new AuditLog();
+                log.setUsername(user.getUsername());
+                log.setIp(request.getRemoteAddr());
+                log.setAction("LOGIN");
+                log.setEntityName("User");
+                log.setEntityId(String.valueOf(user.getId()));
+                log.setDescription("Login user: " + user.getUsername());
+                log.setTimestamp(LocalDateTime.now());
+                auditLogRepository.save(log);
+
+                return "redirect:/home";
+            } else {
+                // Tambah counter gagal login
+                user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+                if (user.getFailedLoginAttempts() >= 5) {
+                    user.setAccountLocked(true);
+                }
+                userService.save(user);
+                if (user.isAccountLocked()) {
+                    model.addAttribute("error", "Akun Anda diblokir karena 5x gagal login. Hubungi IT untuk membuka blokir.");
+                } else {
+                    model.addAttribute("error", "Username, password, atau factory salah!");
+                }
+                return "index";
+            }
         } else {
             model.addAttribute("error", "Username, password, atau factory salah!");
             return "index";
@@ -89,5 +120,20 @@ public String showLoginForm(HttpSession session, Model model, HttpServletRequest
 
         session.invalidate();
         return "redirect:/";
+    }
+
+    @PostMapping("/unlock-user/{id}")
+    public String unlockUser(@PathVariable Long id, RedirectAttributes redirectAttributes, HttpSession session) {
+        User loginUser = (User) session.getAttribute("user");
+        if (loginUser != null && "ADMIN".equals(loginUser.getRole())) {
+            User user = userService.findById(id);
+            if (user != null) {
+                user.setAccountLocked(false);
+                user.setFailedLoginAttempts(0);
+                userService.save(user);
+                redirectAttributes.addFlashAttribute("success", "Akun berhasil di-unlock.");
+            }
+        }
+        return "redirect:/dataUsers";
     }
 }

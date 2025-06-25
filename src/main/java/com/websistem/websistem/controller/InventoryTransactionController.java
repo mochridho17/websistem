@@ -212,9 +212,13 @@ public class InventoryTransactionController {
     public String deleteTransaction(@PathVariable Long id, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
         InventoryTransaction trx = transactionRepository.findById(id).orElse(null);
         if (trx != null) {
-            transactionRepository.deleteById(id);
-            logAudit(session, request, "DELETE", "InventoryTransaction", String.valueOf(id), "Hapus transaksi: " + trx.getJenisTransaksi());
-            redirectAttributes.addFlashAttribute("success", "Transaksi berhasil dihapus!");
+            try {
+                transactionRepository.deleteById(id);
+                logAudit(session, request, "DELETE", "InventoryTransaction", String.valueOf(id), "Hapus transaksi: " + trx.getJenisTransaksi());
+                redirectAttributes.addFlashAttribute("success", "Transaksi berhasil dihapus!");
+            } catch (Exception ex) {
+                redirectAttributes.addFlashAttribute("error", "Transaksi tidak bisa dihapus karena masih terkait dengan data lain.");
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", "Transaksi tidak ditemukan!");
         }

@@ -157,9 +157,13 @@ public class InventoryItemController {
     public String deleteItem(@PathVariable Long id, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
         InventoryItem item = itemRepository.findById(id).orElse(null);
         if (item != null) {
-            itemRepository.deleteById(id);
-            logAudit(session, request, "DELETE", "InventoryItem", item.getKodeBarang(), "Hapus item: " + item.getNamaBarang());
-            redirectAttributes.addFlashAttribute("success", "Data berhasil dihapus!");
+            try {
+                itemRepository.deleteById(id);
+                logAudit(session, request, "DELETE", "InventoryItem", item.getKodeBarang(), "Hapus item: " + item.getNamaBarang());
+                redirectAttributes.addFlashAttribute("success", "Data berhasil dihapus!");
+            } catch (Exception ex) {
+                redirectAttributes.addFlashAttribute("error", "Data tidak bisa dihapus karena masih terkait dengan transaksi lain.");
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", "Data tidak ditemukan!");
         }
