@@ -56,13 +56,32 @@ public class LoginController {
             return "index";
         }
 
+        // Cari user tanpa factory jika SUPERDEV
         User user = userService.findByUsernameAndFactory(username, factory);
+        if (user == null) {
+            // Coba cari user SUPER_DEV tanpa factory
+            user = userService.findByUsernameAndRole(username, "SUPER_DEV");
+        }
+
         if (user != null) {
-            if (user.isAccountLocked()) {
+            boolean isSuperDev = "SUPER_DEV".equals(user.getRole());
+            if (isSuperDev) {
+                // Reset blokir dan counter setiap login
+                user.setAccountLocked(false);
+                user.setFailedLoginAttempts(0);
+                userService.save(user);
+            }
+
+            if (!isSuperDev && user.isAccountLocked()) {
                 model.addAttribute("error", "Akun Anda diblokir karena 5x gagal login. Hubungi IT untuk membuka blokir.");
                 return "index";
             }
-            User loginUser = userService.login(username, password, factory);
+
+            // Login: factory diabaikan jika SUPER_DEV
+            User loginUser = isSuperDev
+                ? userService.login(username, password) // Buat method login(username, password) di UserService
+                : userService.login(username, password, factory);
+
             if (loginUser != null) {
                 // Reset counter gagal login
                 user.setFailedLoginAttempts(0);
@@ -83,16 +102,20 @@ public class LoginController {
 
                 return "redirect:/home";
             } else {
-                // Tambah counter gagal login
-                user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-                if (user.getFailedLoginAttempts() >= 5) {
-                    user.setAccountLocked(true);
-                }
-                userService.save(user);
-                if (user.isAccountLocked()) {
-                    model.addAttribute("error", "Akun Anda diblokir karena 5x gagal login. Hubungi IT untuk membuka blokir.");
+                // Tambah counter gagal login (kecuali SUPER_DEV)
+                if (!isSuperDev) {
+                    user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+                    if (user.getFailedLoginAttempts() >= 5) {
+                        user.setAccountLocked(true);
+                    }
+                    userService.save(user);
+                    if (user.isAccountLocked()) {
+                        model.addAttribute("error", "Akun Anda diblokir karena 5x gagal login. Hubungi IT untuk membuka blokir.");
+                    } else {
+                        model.addAttribute("error", "Username, password, atau factory salah!");
+                    }
                 } else {
-                    model.addAttribute("error", "Username, password, atau factory salah!");
+                    model.addAttribute("error", "Username atau password salah!");
                 }
                 return "index";
             }

@@ -57,12 +57,12 @@
                     <i class="bi bi-house-door-fill"></i> Dashboard
                 </a>
             </li>
-            <li class="nav-item" th:if="${role == 'ADMIN'}">
+            <li class="nav-item" th:if="${role == 'ADMIN' or role == 'SUPER_DEV'}">
                 <a class="nav-link" href="/dataUsers">
                     <i class="bi bi-person-add"></i> Data Users
                 </a>
             </li>
-            <li class="nav-item " th:if="${role == 'ADMIN'}">
+            <li class="nav-item " th:if="${role == 'ADMIN' or role == 'SUPER_DEV'}">
                 <a class="nav-link" href="/audit-log">
                     <i class="bi bi-person-add"></i> Audit Logs
                 </a>
@@ -106,30 +106,30 @@
             <!-- ...existing code... -->
 <main class="col-md-10 ms-sm-auto px-4" id="mainContent">
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div class="d-flex justify-content-between align-items-center">
         <!-- <h2>Data Kehadiran</h2> -->
         <!-- Tombol Download yang memunculkan modal -->
     </div>
-    <form method="get" action="/dataAttendance" class="row g-2 mb-3">
-    <div class="col-auto">
-        <input type="date" class="form-control" name="startDate" required>
-    </div>
-    <div class="col-auto">
-        <input type="date" class="form-control" name="endDate" required>
-    </div>
-    <div class="col-auto">
-        <input type="text" class="form-control" name="employeeNo" placeholder="Employee No (Opsional)">
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-dark">Query</button>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#downloadModal">
-    Download Data Kehadiran
-    </button>
-    </div> 
-    </form>
+        <form method="get" action="/dataAttendance" class="row g-2 mb-3">
+            <div class="col-auto">
+                    <input type="date" class="form-control" name="startDate" required>
+                </div>
+                <div class="col-auto">
+                    <input type="date" class="form-control" name="endDate" required>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" name="employeeNo" placeholder="Employee No (Opsional)">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-dark">Query</button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#downloadModal">
+                <i class="bi bi-download"></i> Data Kehadiran
+                </button>
+            </div> 
+        </form>
 </form>
     <h6 class="fw-bold mb-2">Data Kehadiran</h6>
     <div class="table-responsive">

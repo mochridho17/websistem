@@ -38,5 +38,17 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    // Cari user SUPER_DEV tanpa factory
+    public User findByUsernameAndRole(String username, String role) {
+        List<User> users = userRepository.findByUsernameAndRole(username, role);
+        return users.isEmpty() ? null : users.get(0);
+    }
+
+    // Login SUPER_DEV tanpa factory
+    public User login(String username, String password) {
+        List<User> users = userRepository.findByUsernameAndPasswordAndRole(username, password, "SUPER_DEV");
+        return users.isEmpty() ? null : users.get(0);
+    }
     
 }

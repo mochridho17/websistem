@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,58 +34,72 @@ public class UserController {
 
     @GetMapping("/dataUsers")
     public String showUserPage(Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    User loginUser = (User) session.getAttribute("user");
-    if (loginUser == null) {
-        redirectAttributes.addFlashAttribute("error", "Silakan login terlebih dahulu.");
-        return "redirect:/login";
-    }
-    if (!"ADMIN".equals(loginUser.getRole())) {
-        redirectAttributes.addFlashAttribute("error", "Anda tidak memiliki akses ke halaman ini.");
-        return "redirect:/home";
-    }
-
-    User userForm = new User();
-    userForm.setCreatedPerson(loginUser.getUsername());
-    model.addAttribute("user", userForm);
-
-    model.addAttribute("username", loginUser.getUsername());
-    model.addAttribute("factory", loginUser.getFactory());
-    model.addAttribute("ip", request.getRemoteAddr());
-    model.addAttribute("userList", userRepository.findAll());
-    model.addAttribute("role", loginUser.getRole());
-
-    return "dataUsers";
-}
-
-    @PostMapping("/dataUsers")
-    public String queryUsers(@ModelAttribute("user") User user, Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute("user");
+        boolean isSuperDev = loginUser != null && "SUPER_DEV".equals(loginUser.getRole());
         if (loginUser == null) {
             redirectAttributes.addFlashAttribute("error", "Silakan login terlebih dahulu.");
             return "redirect:/login";
         }
-        // Hanya ADMIN yang bisa query user
-        if (!"ADMIN".equals(loginUser.getRole())) {
+        // Hanya ADMIN dan SUPER_DEV yang boleh akses
+        if (!isSuperDev && !"ADMIN".equals(loginUser.getRole())) {
             redirectAttributes.addFlashAttribute("error", "Anda tidak memiliki akses ke halaman ini.");
             return "redirect:/home";
         }
+
+        User userForm = new User();
+        userForm.setCreatedPerson(loginUser.getUsername());
+        model.addAttribute("user", userForm);
+
+        model.addAttribute("username", loginUser.getUsername());
+        model.addAttribute("factory", loginUser.getFactory());
+        model.addAttribute("ip", request.getRemoteAddr());
+        model.addAttribute("userList", userRepository.findAll());
+        model.addAttribute("role", loginUser.getRole());
+
+        return "dataUsers";
+    }
+
+    @PostMapping("/dataUsers")
+    public String queryUsers(
+            @ModelAttribute("user") User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model,
+            HttpSession session,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+
+        User loginUser = (User) session.getAttribute("user");
+        boolean isSuperDev = loginUser != null && "SUPER_DEV".equals(loginUser.getRole());
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Silakan login terlebih dahulu.");
+            return "redirect:/login";
+        }
+        if (!isSuperDev && !"ADMIN".equals(loginUser.getRole())) {
+            redirectAttributes.addFlashAttribute("error", "Anda tidak memiliki akses ke halaman ini.");
+            return "redirect:/home";
+        }
+
         model.addAttribute("username", loginUser.getUsername());
         model.addAttribute("factory", loginUser.getFactory());
         model.addAttribute("ip", request.getRemoteAddr());
         model.addAttribute("role", loginUser.getRole());
-       
 
-        // Query by NIK (username) jika diisi, jika kosong tampilkan semua
-        List<User> userList;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage;
         if (user.getUsername() != null && !user.getUsername().trim().isEmpty()) {
-            userList = userRepository.findByUsername(user.getUsername().trim());
+            userPage = userRepository.findByUsernameContainingIgnoreCaseAndUsernameNot(
+                user.getUsername().trim(), "SUPERDEV", pageable);
         } else {
-            userList = userRepository.findAll();
+            userPage = userRepository.findByUsernameNot("SUPERDEV", pageable);
         }
-        model.addAttribute("userList", userList);
+        model.addAttribute("userPage", userPage);
         model.addAttribute("user", new User());
-        return "dataUsers";
-    }
+        User userForm = new User();
+        userForm.setCreatedPerson(loginUser.getUsername());
+        model.addAttribute("user", userForm);
+            return "dataUsers";
+        }
 
     @PostMapping("/add-user")
     public String addUser(@ModelAttribute User user, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
