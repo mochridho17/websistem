@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Download Log Data Absensi</title>
+    <script>
+        function checkConnection() {
+            var ip = document.querySelector('input[name="ip"]').value;
+            var key = document.querySelector('input[name="key"]').value;
+            var btn = document.getElementById('btnCheck');
+            btn.disabled = true;
+            btn.innerText = "Checking...";
+            fetch('/attendance-log/check-connection', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'ip=' + encodeURIComponent(ip) + '&key=' + encodeURIComponent(key)
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert(result === "OK" ? "Koneksi Berhasil!" : "Koneksi Gagal: " + result.replace(/^Gagal: /, ""));
+                btn.disabled = false;
+                btn.innerText = "Cek Koneksi";
+            })
+            .catch(() => {
+                alert("Terjadi error saat cek koneksi.");
+                btn.disabled = false;
+                btn.innerText = "Cek Koneksi";
+            });
+        }
+    </script>
+</head>
+<body style="background-color:#caffcb;">
+    <h3>Download Log Data</h3>
+    <form th:action="@{/attendance-log/download}" method="post">
+        IP Address: <input type="text" name="ip" th:value="${ip}" size="15"/><br>
+        Comm Key: <input type="text" name="key" th:value="${key}" size="5"/><br><br>
+        <button type="button" id="btnCheck" onclick="checkConnection()">Cek Koneksi</button>
+        <button type="submit">Download</button>
+    </form>
+    <br>
+    <div th:if="${error != null}">
+        <span th:text="${error}" style="color:red;"></span>
+    </div>
+</body>
+</html>

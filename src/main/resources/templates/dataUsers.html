@@ -245,6 +245,7 @@
         <div class="mb-3">
           <label class="form-label">Factory:</label>
           <select id="editFactory" name="factory" class="form-select" required>
+            <option value="FIG2">FIG2</option>
             <option value="FIU">FIU</option>
             <option value="FIWA">FIWA</option>
           </select>
@@ -297,6 +298,7 @@
                     <label class="form-label">Factory:</label>
                     <select th:field="*{factory}" class="form-select" required>
                         <option value="" th:selected="*{factory} == null" disabled>Pilih Factory</option>
+                        <option value="FIG2">FIG2</option>
                         <option value="FIU">FIU</option>
                         <option value="FIWA">FIWA</option>
                     </select>

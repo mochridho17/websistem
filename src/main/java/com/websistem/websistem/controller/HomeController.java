@@ -37,14 +37,14 @@ public class HomeController {
         }
         long totalUser = userRepository.count();
         // Hitung total kehadiran berdasarkan factory user yang login
-        long totalAttendance = attendanceRepository.countByFactory(loginUser.getFactory());
+        // long totalAttendance = attendanceRepository.countByFactory(loginUser.getFactory());
          // Hitung total karyawan dan kehadiran berdasarkan factory user yang login
         long totalEmployee = employeeFiwaRepository.countByFactory(loginUser.getFactory());
 
 
         model.addAttribute("totalUser", totalUser);
         model.addAttribute("totalEmployee", totalEmployee);
-        model.addAttribute("totalAttendance", totalAttendance);
+        // model.addAttribute("totalAttendance", totalAttendance);
 
         model.addAttribute("username", loginUser.getUsername());
         model.addAttribute("factory", loginUser.getFactory());

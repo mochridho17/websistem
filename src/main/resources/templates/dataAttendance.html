@@ -119,14 +119,14 @@
                     <input type="date" class="form-control" name="endDate" required>
                 </div>
                 <div class="col-auto">
-                    <input type="text" class="form-control" name="employeeNo" placeholder="Employee No (Opsional)">
+                    <input type="text" class="form-control" name="badgenumber" placeholder="NIK (Opsional)">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-dark">Query</button>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#downloadModal">
-                <i class="bi bi-download"></i> Data Kehadiran
+                <i class="bi bi-download"></i> Kehadiran
                 </button>
             </div> 
         </form>
@@ -135,29 +135,21 @@
     <div class="table-responsive">
     <table class="table table-bordered">
     <thead class="table-dark">
-        <tr>
-            <th>NIK</th>
-            <th>Nama</th>
-            <th>Tanggal</th>
-            <th>Jam</th>
-            <th>Dept Code</th>
-            <th>Factory</th>
-        </tr>
+    <tr>
+        <th>NIK</th>
+        <th>Checktime</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:if="${attendanceList == null or #lists.isEmpty(attendanceList)}">
-        <td colspan="6" class="text-center">Tidak ada data</td>
+        <td colspan="2" class="text-center">Tidak ada data</td>
     </tr>
-    <tr th:each="att : ${attendanceList}">
-        <td th:text="${att.employeeNik}"></td>
-        <td th:text="${att.name}"></td>
-        <td th:text="${att.tanggal}"></td>
-        <td th:text="${att.jam}"></td>
-        <td th:text="${att.deptCode}"></td>
-        <td th:text="${att.factory}"></td>
+    <tr th:each="row : ${attendanceList}">
+    <td th:text="${row[0]}"></td>
+    <td th:text="${#temporals.format(row[1], 'yyyy-MM-dd HH:mm:ss')}"></td>
     </tr>
-</tbody>
-</table>
+    </tbody>
+    </table>
 </div>
     <!-- Modal Download Data Attendance -->
 <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
@@ -186,8 +178,8 @@
                     </select>
                 </div> -->
                 <div class="mb-3">
-                    <label for="employeeNo" class="form-label">Employee No (Opsional)</label>
-                    <input type="text" class="form-control" id="employeeNo" name="employeeNo" placeholder="Kosongkan untuk semua employee">
+                    <label for="badgenumber" class="form-label">NIK (Opsional)</label>
+                    <input type="text" class="form-control" id="badgenumber" name="badgenumber" placeholder="Kosongkan untuk semua NIK">
                 </div>
             </div>
             <div class="modal-footer">

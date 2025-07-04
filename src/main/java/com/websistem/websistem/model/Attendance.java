@@ -2,30 +2,19 @@ package com.websistem.websistem.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "data_attendance")
+@Table(name = "attendance_log")
 @Data
 public class Attendance {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "dept_code")
-    private String deptCode;
-
-    @Column(name = "employee_nik")
-    private String employeeNik;
+    @Column(name = "badgenumber")
+    private String badgenumber;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "tanggal")
-    private String tanggal;
-
-    @Column(name = "jam")
-    private String jam;
-
-    @Column(name = "factory")
-    private String factory;
+    @Column(name = "checktime")
+    private LocalDateTime checktime;
 }

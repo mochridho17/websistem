@@ -74,6 +74,9 @@ public class EmployeeController {
         List<String> duplikatList = new ArrayList<>();
         User user = (User) session.getAttribute("user");
         String factory = user != null ? user.getFactory() : null;
+
+        
+
         // Tambahkan set untuk deteksi duplikat di file
         Set<String> uniqueKeySet = new HashSet<>();
         try (InputStream is = file.getInputStream();
@@ -95,6 +98,21 @@ public class EmployeeController {
             continue;
         }
         String employeeNo = getCellValue(row, 0);
+
+         // === Validasi NIK berdasarkan factory user login ===
+        boolean valid = false;
+        if ("FIG2".equalsIgnoreCase(factory)) {
+            valid = employeeNo != null && (employeeNo.startsWith("7") || employeeNo.startsWith("997"));
+        } else if ("FIWA".equalsIgnoreCase(factory)) {
+            valid = employeeNo != null && (employeeNo.startsWith("85") || employeeNo.startsWith("9985"));
+        } else {
+            valid = true;
+        }
+        if (!valid) {
+            redirectAttributes.addFlashAttribute("error", "NIK " + employeeNo + " tidak sesuai dengan aturan factory " + factory);
+            return "redirect:/dataEmployee";
+        }
+
         String startDate = getCellValue(row, 28); // index 28 untuk startDate
 
                 // Cek duplikat di file (bukan hanya di database)
@@ -290,6 +308,21 @@ public String deleteEmployee(@PathVariable Long id, RedirectAttributes redirectA
                 }
                 String employeeNo = getCellValue(row, 4);
                 String resignDate = getCellValue(row, 11); // Asumsi kolom ke-1 adalah resign_date
+
+                // === Validasi NIK berdasarkan factory user login ===
+                boolean valid = false;
+                if ("FIG2".equalsIgnoreCase(factory)) {
+                    valid = employeeNo != null && (employeeNo.startsWith("7") || employeeNo.startsWith("997"));
+                } else if ("FIWA".equalsIgnoreCase(factory)) {
+                    valid = employeeNo != null && (employeeNo.startsWith("85") || employeeNo.startsWith("9985"));
+                } else {
+                    valid = true;
+                }
+                if (!valid) {
+                    redirectAttributes.addFlashAttribute("error", "NIK " + employeeNo + " tidak sesuai dengan aturan factory " + factory);
+                    return "redirect:/dataEmployee";
+                }
+                // === END Validasi ===
 
                 // Cari karyawan berdasarkan employeeNo dan factory
                 EmployeeFiwa emp = employeeFiwaRepository.findByEmployeeNoAndFactory(employeeNo, factory);

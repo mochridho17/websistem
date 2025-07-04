@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,15 @@ public class AuditLogController {
 
     @GetMapping("/test-backup-auditlog")
     public String testBackupAuditLog() {
+        System.out.println("=== TEST BACKUP AUDIT LOG DIJALANKAN ===");
         auditLogMaintenanceService.backupAndDeleteOldAuditLogs();
         return "redirect:/audit-log";
     }
+
+    @GetMapping("/restore-auditlog")
+    public String restoreAuditLog(@RequestParam String filePath) {
+        auditLogMaintenanceService.restoreAuditLogFromBackup(filePath);
+        return "redirect:/audit-log";
+    }
+    
 }

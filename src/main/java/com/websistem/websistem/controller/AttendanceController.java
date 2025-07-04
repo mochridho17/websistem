@@ -3,9 +3,13 @@ package com.websistem.websistem.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +34,7 @@ public class AttendanceController {
     public String dataAttendance(
         @RequestParam(required = false) String startDate,
         @RequestParam(required = false) String endDate,
-        @RequestParam(required = false) String employeeNo,
+        @RequestParam(required = false) String badgenumber,
         HttpSession session,
         Model model,
         HttpServletRequest request
@@ -39,10 +43,6 @@ public class AttendanceController {
         if (user == null) {
             return "redirect:/";
         }
-        String factory = user.getFactory();
-
-        String startDb = (startDate != null && !startDate.isEmpty()) ? startDate.replace("-", "/") : null;
-        String endDb = (endDate != null && !endDate.isEmpty()) ? endDate.replace("-", "/") : null;
 
         // Validasi range tanggal maksimal 30 hari
         if (startDate != null && endDate != null && !startDate.isEmpty() && !endDate.isEmpty()) {
@@ -59,29 +59,39 @@ public class AttendanceController {
             }
         }
 
-        if (employeeNo != null && employeeNo.trim().isEmpty()) {
-            employeeNo = null;
+        if (badgenumber != null && badgenumber.trim().isEmpty()) {
+            badgenumber = null;
         }
 
-        List<Attendance> data = null;
-        if (startDb != null && endDb != null) {
-            data = attendanceRepository.findByTanggalBetweenAndFactory(startDb, endDb, factory, employeeNo);
-        }
+        List<Object[]> data = null;
+        if (startDate != null && endDate != null) {
+            LocalDateTime startDb = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
+            LocalDateTime endDb = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE).atTime(23, 59, 59);
+            data = attendanceRepository.findSyncedAttendance(
+                startDb, endDb, user.getFactory(), badgenumber
+                
+            );
+
+            System.out.println("Factory: " + user.getFactory());
+            System.out.println("Start: " + startDb + ", End: " + endDb + ", NIK: " + badgenumber);
+            System.out.println("Data size: " + data.size());
+                    }
 
         model.addAttribute("attendanceList", data);
         model.addAttribute("username", user.getUsername());
-        model.addAttribute("factory", factory);
         model.addAttribute("ip", request.getRemoteAddr());
         model.addAttribute("role", user.getRole());
+
+        model.addAttribute("factory", user.getFactory());
 
         return "dataAttendance";
     }
 
-   @GetMapping("/download-attendance")
+    @GetMapping("/download-attendance")
     public void downloadAttendance(
         @RequestParam String startDate,
         @RequestParam String endDate,
-        @RequestParam(required = false) String employeeNo,
+        @RequestParam(required = false) String badgenumber,
         HttpSession session,
         HttpServletResponse response
     ) throws IOException {
@@ -96,30 +106,62 @@ public class AttendanceController {
         }
 
         User user = (User) session.getAttribute("user");
-        String factory = (user != null) ? user.getFactory() : null;
-        String startDb = startDate.replace("-", "/");
-        String endDb = endDate.replace("-", "/");
-
-        if (employeeNo != null && employeeNo.trim().isEmpty()) {
-            employeeNo = null;
+        if (badgenumber != null && badgenumber.trim().isEmpty()) {
+            badgenumber = null;
         }
 
-        List<Attendance> data = attendanceRepository.findByTanggalBetweenAndFactory(
-            startDb, endDb, factory, employeeNo
+        LocalDateTime startDb = start.atStartOfDay();
+        LocalDateTime endDb = end.atTime(23, 59, 59);
+
+        // Ambil data
+        List<Object[]> data = attendanceRepository.findSyncedAttendance(
+            startDb, endDb, user.getFactory(), badgenumber
         );
 
-        String fileFactory = (factory != null && !factory.isEmpty()) ? factory : "ALL";
-        String fileName = fileFactory + "-" + startDate + "_" + endDate + ".txt";
-
+        String fileName = "attendance-" + startDate + "_" + endDate + ".txt";
         response.setContentType("text/plain");
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
         PrintWriter writer = response.getWriter();
-        for (Attendance att : data) {
-            String nik = String.format("%010d", Long.parseLong(att.getEmployeeNik()));
-            writer.printf("%s;%s;%s%n", nik, att.getTanggal(), att.getJam());
+
+        // Map untuk menyimpan data unik per badge per tanggal per menit
+        Map<String, List<Object[]>> grouped = new LinkedHashMap<>();
+
+        for (Object[] row : data) {
+            String badge = (String) row[0];
+            LocalDateTime checktime = (LocalDateTime) row[1];
+            String tanggal = checktime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            String menit = checktime.format(DateTimeFormatter.ofPattern("HH:mm"));
+            String key = badge + ";" + tanggal;
+
+            // Inisialisasi list jika belum ada
+            grouped.putIfAbsent(key, new ArrayList<>());
+
+            // Cek apakah sudah ada data dengan menit yang sama
+            boolean menitSudahAda = grouped.get(key).stream()
+                .anyMatch(r -> ((LocalDateTime) r[1]).format(DateTimeFormatter.ofPattern("HH:mm")).equals(menit));
+
+            // Jika belum ada menit yang sama dan belum 2 data, tambahkan
+            if (!menitSudahAda && grouped.get(key).size() < 2) {
+                grouped.get(key).add(row);
+            }
         }
+
+        // Tulis hasil ke file
+        for (List<Object[]> rows : grouped.values()) {
+            for (Object[] row : rows) {
+                String badge = (String) row[0];
+                String badgeFormatted = String.format("%010d", Long.parseLong(badge));
+                LocalDateTime checktime = (LocalDateTime) row[1];
+                String tanggal = checktime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                String jam = checktime.format(DateTimeFormatter.ofPattern("HH:mm"));
+                writer.printf("%s;%s;%s%n", badgeFormatted, tanggal, jam);
+            }
+        }
+
         writer.flush();
         writer.close();
-    }
+
+        }
+
 }
